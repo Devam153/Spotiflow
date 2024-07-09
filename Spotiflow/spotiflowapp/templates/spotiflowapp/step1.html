@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Step1</title>
+    <link rel="stylesheet" href="step1.css">
+</head>
+
+<body>
+    <div class="number">1</div>
+
+    <div class="container">
+        <div class="image">
+            <input type="file" accept="image/jpeg, image/png, image, jpg" id="input-file" hidden>
+            <div id="drop-area">
+                <div id="img-view">
+                    <img src="Upload-Spotify.png" alt="">
+                    <p class="drag">Drag &amp; drop an image here to start</p>
+                    <span>Supports: JPG, PNG, or WEBP</span>
+                    <span>File Size Limit: 20MB</span>
+                    <button id="upload-button">Upload Image</button>
+                </div>
+            </div>
+        </div>
+        <div class="vertical-line"></div>
+        <div class="manual">
+            <p class="enter-songs-manually">Enter songs manually</p>
+            <p>Enter song name</p>
+            <input type="text" placeholder="song name here">
+            <p>Enter artist name</p>
+            <input type="text" placeholder="artist name here">
+            <button>Enter</button>
+        </div>
+    </div>
+    <button class="continue" title="Continue">Continue</button>
+
+    <script src="step1.js"></script>
+</body>
+
+</html>

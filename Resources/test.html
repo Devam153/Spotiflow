@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Like a Song</title>
+
+    <style>
+        /* Style the checkbox container */
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+        }
+
+        /* Style the checkbox */
+        .checkbox-container input[type="checkbox"] {
+            appearance: none;
+            /* Remove default styles */
+            width: 20px;
+            /* Set the width of the checkbox */
+            height: 20px;
+            /* Set the height of the checkbox */
+            background-color: transparent;
+            /* Set initial background color */
+            border: 2px solid #4CAF50;
+            /* Set initial border color */
+            border-radius: 5px;
+            /* Optional: Round the corners */
+            margin-right: 10px;
+            /* Optional: Add some spacing between checkbox and label */
+        }
+
+        /* Style the checkbox when checked */
+        .checkbox-container input[type="checkbox"]:checked {
+            background-color: #4CAF50;
+            /* Set background color when checked */
+        }
+
+        /* Style the checkbox tick mark */
+        .checkbox-container input[type="checkbox"]:checked::before {
+            content: "\2713";
+            /* Unicode check mark character */
+            display: inline-block;
+            font-size: 16px;
+            /* Set the size of the check mark */
+            color: #000;
+            /* Set the color of the check mark */
+            text-align: center;
+            line-height: 20px;
+            /* Match the line height of the checkbox */
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="checkbox-container">
+        <label for="likeSong">Liked Songs as well</label>
+        <input type="checkbox" id="likeSong" name="likeSong">
+    </div>
+
+</body>
+
+</html>
