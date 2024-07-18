@@ -1,17 +1,18 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>End</title>
-    <link rel="stylesheet" href="end.css">
+    <link rel="stylesheet" href="{% static 'styles/end.css' %}">
 </head>
 
 <body>
     <div class="center-container">
         <div class="end">
-            <img src="end.jpg" alt="" class="end-image">
+            <img src="{% static 'images/end.jpg' %}" alt="" class="end-image">
             <p class="songs-added">SONGS ADDED TO PLAYLIST, ENJOY!</p>
             <a href="https://open.spotify.com" class="go-to-spotify" target="_blank">Go to Spotify</a>
         </div>
