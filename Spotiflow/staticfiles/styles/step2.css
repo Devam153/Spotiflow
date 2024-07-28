@@ -1,0 +1,233 @@
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    background: linear-gradient(180deg, rgba(25, 20, 20, 1), rgb(10, 70, 30));
+    color: white;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    background-attachment: fixed;
+    overflow: hidden;
+}
+
+.container {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+.image {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.song-view {
+    width: 530px;
+    height: 460px;
+
+}
+.song-textarea {
+    width: 100%;
+    height: 100%;
+    background-color: rgb(30, 30, 30);
+    color: white;
+    /* Change this to the color you want for the text */
+    border-radius: 20px;
+    border: none;
+    resize: none;
+    background-image: url('download.svg');
+    font-size: 15px;
+    box-sizing: border-box;
+    padding: 10px;
+
+}
+
+.vertical-line {
+    border-left: 2px solid white;
+    height: 460px;
+    margin: 0 50px;
+    margin-top: 10px;
+    position: relative;
+}
+
+.manual-container{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    height: 460px;
+    justify-content: center;
+    z-index: 0;
+}
+.manual {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    height: 300px;
+    justify-content: center;
+    position: relative;
+    z-index: 0;
+}
+.button-container {
+    display: flex;
+    position: absolute;
+    top: 40px;
+    justify-content: space-evenly;
+    width: 85%;
+    z-index: 1;
+}
+
+.button-container button {
+    padding: 12px 18px;
+    background-color: rgba(29, 185, 84, 1);
+    border-width: 1px;
+    border-color: rgb(0, 0, 0);
+    border-radius: 10px;
+    border-style: solid;
+    color: rgba(25, 20, 20, 1);
+    font-weight: bold;
+    font-size: 16px;
+    transition: 0.2s;
+    cursor: pointer;
+}
+
+.manual input {
+    max-width: 380px;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+}
+
+.enter-button {
+    padding: 10px 28px;
+    background-color: rgba(29, 185, 84, 1);
+    color: rgba(25, 20, 20, 1);
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 30px;
+
+    border-radius: 10px;
+    border: 1px solid rgb(0, 0, 0);
+
+    position: absolute;
+    left: 415px;
+    bottom: 70px;
+    transition: 0.2s;
+}
+.manual p{
+    font-size: 18px;
+    margin-left: 24px;
+    margin-bottom: 10px;
+}
+.manual input {
+    padding: 10px;
+    border-radius: 12px;
+    background-color: rgb(67, 67, 67);
+    color: white;
+    height: 22px;
+    margin-left: 20px;
+    margin-bottom: 15px;
+    font-size: 16px;
+    color: rgb(190, 190, 0);;
+}
+
+.manual input::placeholder {
+    color: rgb(170, 170, 170);
+    font-size: 13px;
+
+}
+
+.checkbox-container {
+    display: flex;
+}
+
+.checkbox{
+    margin: 0;
+}
+
+.checkbox-line {
+    font-size: 0px;
+    font-weight: bold;
+    margin: 0;
+}
+.checkbox-container input[type="checkbox"] {
+    appearance: none;
+    background-color: rgb(40,40,40);
+    border: 2px solid black;
+    border-radius: 5px;
+    position: relative;
+}
+
+/* Style the checkbox when checked */
+.checkbox-container input[type="checkbox"]:checked {
+    background-color: rgba(29, 185, 84, 1);
+    /* Set background color when checked */
+}
+
+/* Style the checkbox tick mark */
+.checkbox-container input[type="checkbox"]:checked::before {
+    content: "\2714";
+
+    color: black;
+
+    text-align: center;
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.number {
+    background-color: black;
+    color: rgb(190, 190, 0);
+    border-radius: 50%;
+    /* Use 50% for a circle */
+    padding: 12px 22px;
+    position: absolute;
+    top: 110px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    /* Center the number */
+    font-size: 30px;
+    z-index: 1;
+    /* Ensure the number is visible above other elements */
+}
+.continue {
+    background-color: rgb(14, 177, 71);
+    border-width: 2px;
+    border-color: rgb(0, 0, 0);
+    border-radius: 5px;
+    border-style: solid;
+
+    display: block;
+    padding: 8px 140px;
+
+    font-size: 20px;
+    font-weight: bold;
+    color: rgba(25, 20, 20, 1);
+    border-radius: 6px;
+
+    position: absolute;
+    align-items: center;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.continue:hover,
+.manual button:hover,
+.button-container button:hover {
+    opacity: 0.7;
+}
+
+.continue:active,
+.manual button:active,
+.button-container button:active {
+    opacity: 0.4;
+}

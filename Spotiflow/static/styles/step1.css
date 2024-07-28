@@ -30,7 +30,7 @@ body {
     border-radius: 20px;
     /*border: 3px inset rgb(154, 154, 2);*/
     position: relative;
-    background-image: url("Spotiflow/Spotiflow/static/images/download.svg");
+    background-image: url("download.svg");
     
 }
 
