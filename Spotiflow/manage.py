@@ -1,3 +1,4 @@
+
 #!/usr/bin/env python
 """Django's command-line utility for administrative tasks."""
 import os
@@ -8,10 +9,6 @@ def main():
     """Run administrative tasks."""
     # Update the settings module path to point to the correct location
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'spotiflow.settings')
-    
-    # Add the parent directory to sys.path to help Python find your modules
-    current_path = os.path.dirname(os.path.abspath(__file__))
-    sys.path.append(os.path.dirname(current_path))
     
     try:
         from django.core.management import execute_from_command_line

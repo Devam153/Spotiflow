@@ -1,3 +1,4 @@
+
 """
 WSGI config for Spotiflow project.
 
@@ -11,6 +12,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Spotiflow.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'spotiflow.settings')
 
 application = get_wsgi_application()

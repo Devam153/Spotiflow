@@ -6,7 +6,7 @@ class OCRHandler:
     def __init__(self):
         # Use getattr to provide a default value if the setting is not defined
         tesseract_path = getattr(settings, 'TESSERACT_CMD_PATH', r'C:\Program Files\Tesseract-OCR\tesseract.exe')
-        pytesseract.pytesseract.tesseract_cmd = tesseract_path
+        pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
     def process_image(self, image):
         img = Image.open(image)

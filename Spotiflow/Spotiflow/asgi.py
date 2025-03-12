@@ -1,3 +1,4 @@
+
 """
 ASGI config for Spotiflow project.
 
@@ -11,6 +12,6 @@ import os
 
 from django.core.asgi import get_asgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Spotiflow.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'spotiflow.settings')
 
 application = get_asgi_application()

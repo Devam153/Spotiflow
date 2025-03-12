@@ -1,4 +1,3 @@
-
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.contrib import messages
@@ -8,7 +7,7 @@ import json
 
 def index(request):
     """Home page view"""
-    return render(request, 'spotify_app/index.html')
+    return render(request, 'index.html')  # <--- Template is in spotify_app/templates/index.html
 
 def process_image(request):
     """Process uploaded image with OCR"""
@@ -72,7 +71,7 @@ def step1(request):
             request.session['songs'] = songs
             return redirect('spotify_app:step2')
             
-    return render(request, 'spotify_app/step1.html')
+    return render(request, 'step1.html')  # <--- step1.html in spotify_app/templates/
 
 def step2(request):
     """Step 2: Select what to do with the songs"""
@@ -94,7 +93,7 @@ def step2(request):
         
         if not track_ids:
             messages.warning(request, "No songs were found on Spotify.")
-            return render(request, 'spotify_app/step2.html', {'songs': songs})
+            return render(request, 'step2.html', {'songs': songs})
         
         # Store track IDs in session
         request.session['track_ids'] = track_ids
@@ -133,14 +132,14 @@ def step2(request):
     # Get user playlists for display
     try:
         playlists = spotify.get_user_playlists()
-        return render(request, 'spotify_app/step2.html', {
+        return render(request, 'step2.html', {
             'songs': songs,
             'playlists': playlists['items'] if playlists else []
         })
     except Exception as e:
         messages.error(request, f"Failed to load Spotify playlists: {str(e)}")
-        return render(request, 'spotify_app/step2.html', {'songs': songs})
+        return render(request, 'step2.html', {'songs': songs})
 
 def completion(request):
     """Completion page after successful operation"""
-    return render(request, 'spotify_app/completion.html')
+    return render(request, 'completion.html')  # <--- completion.html in spotify_app/templates/

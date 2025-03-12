@@ -21,7 +21,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'spotify_app',
+    'spotify_app.apps.SpotifyAppConfig',
 ]
 
 MIDDLEWARE = [
@@ -39,7 +39,7 @@ ROOT_URLCONF = 'spotiflow.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [BASE_DIR / 'templates'],  # Point to the templates folder at the root level
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -63,22 +63,21 @@ DATABASES = {
 }
 
 # Tesseract Configuration
-TESSERACT_CMD_PATH = r'C:\Users\DEVAM\AppData\Local\Programs\Tesseract-OCR\tesseract.exe' # Adjust this path based on your system
+TESSERACT_CMD_PATH = r'C:\Program Files\Tesseract-OCR\tesseract.exe'  # Adjust this path based on your system
 
 # Spotify Configuration
-SPOTIFY_CLIENT_ID = '073e9adeb41349e8b574719ea607870f'
-SPOTIFY_CLIENT_SECRET = '7bf17e18a43a44aaa064a420e9344e03'
-SPOTIFY_REDIRECT_URI = 'http://localhost:3000'
+SPOTIFY_CLIENT_ID = 'your-client-id'
+SPOTIFY_CLIENT_SECRET = 'your-client-secret'
+SPOTIFY_REDIRECT_URI = 'http://localhost:8000/callback/'
 SPOTIFY_SCOPE = 'playlist-modify-public user-library-modify'
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATICFILES_DIRS = []
 
 # Media files (Uploaded files)
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+ 
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
