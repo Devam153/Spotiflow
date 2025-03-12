@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Songs - Spotiflow</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #191414;
+            color: #FFFFFF;
+            font-family: 'Circular', Arial, sans-serif;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .spotify-green {
+            color: #1DB954;
+        }
+
+        .btn-spotify {
+            background-color: #1DB954;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 10px 30px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 20px 0;
+        }
+
+        .btn-spotify:hover {
+            background-color: #1ed760;
+            color: white;
+        }
+
+        .content-section {
+            background-color: #282828;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .upload-area {
+            border: 2px dashed #1DB954;
+            border-radius: 10px;
+            padding: 3rem 1rem;
+            text-align: center;
+            cursor: pointer;
+            margin-bottom: 1.5rem;
+        }
+
+        .upload-area:hover {
+            background-color: rgba(29, 185, 84, 0.1);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #1DB954;
+        }
+
+        .or-divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .or-divider::before,
+        .or-divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #444;
+        }
+
+        .or-divider::before {
+            margin-right: 1rem;
+        }
+
+        .or-divider::after {
+            margin-left: 1rem;
+        }
+
+        .form-control {
+            background-color: #333;
+            border: none;
+            color: white;
+        }
+
+        .form-control:focus {
+            background-color: #444;
+            color: white;
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            margin: 0 1rem;
+        }
+
+        .step-number {
+            background-color: #1DB954;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .step.inactive .step-number {
+            background-color: #282828;
+        }
+
+        #previewContainer {
+            margin-top: 1.5rem;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .song-item {
+            background-color: #333;
+            border: none;
+            margin-bottom: 0.5rem;
+        }
+
+        .message {
+            margin: 1rem 0;
+            padding: 0.75rem;
+            border-radius: 5px;
+        }
+
+        .message.error {
+            background-color: rgba(220, 53, 69, 0.2);
+            color: #dc3545;
+        }
+
+        .message.success {
+            background-color: rgba(40, 167, 69, 0.2);
+            color: #28a745;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><span class="spotify-green">Spoti</span>flow</h1>
+            <p>Step 1: Upload Your Songs</p>
+        </div>
+
+        <div class="step-indicator">
+            <div class="step">
+                <div class="step-number">1</div>
+                <span>Upload Songs</span>
+            </div>
+            <div class="step inactive">
+                <div class="step-number">2</div>
+                <span>Create Playlist</span>
+            </div>
+            <div class="step inactive">
+                <div class="step-number">3</div>
+                <span>Done</span>
+            </div>
+        </div>
+
+        {% if messages %}
+        {% for message in messages %}
+        <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        <div class="content-section">
+            <h3 class="mb-4">Upload an image with a list of songs</h3>
+
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor"
+                        viewBox="0 0 16 16">
+                        <path
+                            d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z" />
+                        <path
+                            d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708l3-3z" />
+                    </svg>
+                </div>
+                <h5>Drag & Drop an image here</h5>
+                <p class="text-muted">or click to browse files</p>
+                <input type="file" id="imageUpload" style="display: none;" accept="image/*">
+            </div>
+
+            <div id="uploadStatus" style="display: none;">
+                <div class="d-flex justify-content-center">
+                    <div class="spinner-border text-light" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+                <p class="text-center mt-2">Processing image...</p>
+            </div>
+
+            <div id="previewContainer" style="display: none;">
+                <h4>Detected Songs:</h4>
+                <ul class="list-group" id="songsList"></ul>
+
+                <div class="mt-4">
+                    <button id="continueButton" class="btn btn-spotify">Continue</button>
+                </div>
+            </div>
+
+            <div class="or-divider">
+                <span>OR</span>
+            </div>
+
+            <h3 class="mb-3">Enter songs manually</h3>
+            <form method="post" action="{% url 'spotify_app:step1' %}">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="manualSongs" class="form-label">Enter songs (one per line, format: "Song Title - Artist
+                        Name")</label>
+                    <textarea class="form-control" id="manualSongs" name="manual_songs" rows="6"
+                        placeholder="Enter songs one per line, e.g:&#10;Bohemian Rhapsody - Queen&#10;Hotel California - Eagles"></textarea>
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-spotify">Continue</button>
+                    <a href="{% url 'spotify_app:index' %}" class="btn btn-outline-light ms-2">Back</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Handle drag & drop and file upload
+        const uploadArea = document.getElementById('uploadArea');
+        const imageUpload = document.getElementById('imageUpload');
+        const uploadStatus = document.getElementById('uploadStatus');
+        const previewContainer = document.getElementById('previewContainer');
+        const songsList = document.getElementById('songsList');
+        const continueButton = document.getElementById('continueButton');
+
+        // Prevent default drag behaviors
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, preventDefaults, false);
+            document.body.addEventListener(eventName, preventDefaults, false);
+        });
+
+        // Highlight drop area when item is dragged over it
+        ['dragenter', 'dragover'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, unhighlight, false);
+        });
+
+        // Handle dropped files
+        uploadArea.addEventListener('drop', handleDrop, false);
+
+        // Handle clicked upload
+        uploadArea.addEventListener('click', () => {
+            imageUpload.click();
+        });
+
+        imageUpload.addEventListener('change', handleFiles);
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        function highlight() {
+            uploadArea.classList.add('bg-dark');
+        }
+
+        function unhighlight() {
+            uploadArea.classList.remove('bg-dark');
+        }
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            handleFiles(files);
+        }
+
+        function handleFiles(e) {
+            const files = e.target ? e.target.files : e;
+            if (files && files[0]) {
+                const file = files[0];
+                uploadFile(file);
+            }
+        }
+
+        function uploadFile(file) {
+            // Show loading
+            uploadArea.style.display = 'none';
+            uploadStatus.style.display = 'block';
+
+            const formData = new FormData();
+            formData.append('image', file);
+            formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+
+            fetch('{% url "spotify_app:process_image" %}', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    uploadStatus.style.display = 'none';
+
+                    if (data.success) {
+                        previewContainer.style.display = 'block';
+
+                        // Display detected songs
+                        songsList.innerHTML = '';
+                        if (Object.keys(data.songs).length === 0) {
+                            songsList.innerHTML = '<li class="list-group-item song-item text-white">No songs detected</li>';
+                            continueButton.disabled = true;
+                        } else {
+                            for (const [song, artist] of Object.entries(data.songs)) {
+                                const li = document.createElement('li');
+                                li.className = 'list-group-item song-item text-white';
+                                li.innerHTML = `<strong>${song}</strong> ${artist ? '- ' + artist : ''}`;
+                                songsList.appendChild(li);
+                            }
+                            continueButton.disabled = false;
+                        }
+                    } else {
+                        alert('Error processing image: ' + data.error);
+                        uploadArea.style.display = 'block';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error uploading image. Please try again.');
+                    uploadStatus.style.display = 'none';
+                    uploadArea.style.display = 'block';
+                });
+        }
+
+        // Handle continue button click
+        continueButton.addEventListener('click', () => {
+            window.location.href = '{% url "spotify_app:step2" %}';
+        });
+    </script>
+</body>
+
+</html>

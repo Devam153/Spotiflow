@@ -63,7 +63,7 @@ DATABASES = {
 }
 
 # Tesseract Configuration
-TESSERACT_CMD_PATH = r'C:\Program Files\Tesseract-OCR\tesseract.exe'  # Adjust this path based on your system
+TESSERACT_CMD_PATH = r'C:\Users\DEVAM\AppData\Local\Programs\Tesseract-OCR\tesseract.exe' # Adjust this path based on your system
 
 # Spotify Configuration
 SPOTIFY_CLIENT_ID = '073e9adeb41349e8b574719ea607870f'
@@ -81,3 +81,4 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+

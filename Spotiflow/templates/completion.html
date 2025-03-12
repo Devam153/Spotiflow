@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Success - Spotiflow</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #191414;
+            color: #FFFFFF;
+            font-family: 'Circular', Arial, sans-serif;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .spotify-green {
+            color: #1DB954;
+        }
+
+        .btn-spotify {
+            background-color: #1DB954;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 10px 30px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 20px 0;
+        }
+
+        .btn-spotify:hover {
+            background-color: #1ed760;
+            color: white;
+        }
+
+        .content-section {
+            background-color: #282828;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            margin: 0 1rem;
+        }
+
+        .step-number {
+            background-color: #1DB954;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .success-icon {
+            font-size: 5rem;
+            color: #1DB954;
+            margin-bottom: 1rem;
+        }
+
+        .message {
+            margin: 1rem 0;
+            padding: 0.75rem;
+            border-radius: 5px;
+        }
+
+        .message.error {
+            background-color: rgba(220, 53, 69, 0.2);
+            color: #dc3545;
+        }
+
+        .message.success {
+            background-color: rgba(40, 167, 69, 0.2);
+            color: #28a745;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><span class="spotify-green">Spoti</span>flow</h1>
+            <p>Success!</p>
+        </div>
+
+        <div class="step-indicator">
+            <div class="step">
+                <div class="step-number">1</div>
+                <span>Upload Songs</span>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <span>Create Playlist</span>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <span>Done</span>
+            </div>
+        </div>
+
+        {% if messages %}
+        {% for message in messages %}
+        <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        <div class="content-section">
+            <div class="success-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor"
+                    viewBox="0 0 16 16">
+                    <path
+                        d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
+                </svg>
+            </div>
+
+            <h2>Operation Completed!</h2>
+            <p class="lead">Your songs have been successfully added to Spotify.</p>
+
+            <div class="mt-4">
+                <a href="https://open.spotify.com" target="_blank" class="btn btn-spotify">Open Spotify</a>
+                <a href="{% url 'spotify_app:index' %}" class="btn btn-outline-light ms-2">Start Over</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
