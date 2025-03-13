@@ -2,96 +2,137 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spotiflow - Convert Images to Spotify Playlists</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Spotiflow</title>
+    <meta name="description" content="Automate your Spotify experience" />
+    <meta name="author" content="Spotiflow" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <style>
+        :root {
+            --background: 0 0% 9%;
+            --foreground: 0 0% 100%;
+            --primary: 142 70% 50%;
+            --primary-foreground: 0 0% 9%;
+            --muted: 240 3.7% 15.9%;
+            --muted-foreground: 240 5% 84.9%;
+            --radius: 0.5rem;
+        }
+
         body {
-            background-color: #191414;
-            color: #FFFFFF;
-            font-family: 'Circular', Arial, sans-serif;
+            background-color: hsl(var(--background));
+            color: hsl(var(--foreground));
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            margin: 0;
+            padding: 0;
         }
 
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-
-        .spotify-green {
-            color: #1DB954;
-        }
-
-        .btn-spotify {
-            background-color: #1DB954;
-            color: white;
+        .primary-button {
+            background-color: hsl(var(--primary));
+            color: hsl(var(--primary-foreground));
+            border-radius: 0.5rem;
+            padding: 0.75rem 2rem;
+            font-weight: 500;
             border: none;
-            border-radius: 30px;
-            padding: 10px 30px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin: 20px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 0 15px rgba(57, 211, 83, 0.5);
+            text-decoration: none;
+            display: inline-block;
         }
 
-        .btn-spotify:hover {
-            background-color: #1ed760;
-            color: white;
+        .primary-button:hover {
+            box-shadow: 0 0 25px rgba(57, 211, 83, 0.7);
+            transform: translateY(-2px);
         }
 
-        .feature-section {
-            margin: 2rem 0;
+        .step-circle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 4rem;
+            width: 4rem;
+            border-radius: 9999px;
+            background-color: black;
+            border: 2px solid hsl(var(--primary));
+            color: hsl(var(--primary));
+            font-size: 1.875rem;
+            font-weight: 700;
+        }
+
+        .upload-area {
+            border: 2px dashed rgba(29, 185, 84, 0.5);
+            border-radius: 0.5rem;
+            padding: 2rem;
             text-align: center;
+            background-color: rgba(0, 0, 0, 0.3);
+            transition: all 0.3s;
         }
 
-        .feature-card {
-            background-color: #282828;
-            border-radius: 10px;
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        .upload-area:hover {
+            border-color: hsl(var(--primary));
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .input-field {
+            background-color: hsl(var(--muted));
+            border: 1px solid hsla(var(--muted-foreground), 0.2);
+            border-radius: 0.5rem;
+            padding: 0.75rem 1rem;
+            color: hsl(var(--foreground));
+            width: 100%;
+            transition: all 0.3s;
+            box-sizing: border-box;
+        }
+
+        .input-field:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px hsla(var(--primary), 0.5);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+            }
+
+            to {
+                transform: scale(1);
+            }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+
+        .animate-scale-in {
+            animation: scaleIn 0.5s 0.3s ease-out forwards;
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <div class="header">
-            <h1><span class="spotify-green">Spoti</span>flow</h1>
-            <p class="lead">Convert song lists from images to Spotify playlists in seconds</p>
-
-            <a href="{% url 'spotify_app:step1' %}" class="btn btn-spotify btn-lg">Get Started</a>
-        </div>
-
-        <div class="row feature-section">
-            <div class="col-md-4">
-                <div class="feature-card">
-                    <h3>1. Upload Image</h3>
-                    <p>Upload an image containing a list of songs and artists</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="feature-card">
-                    <h3>2. Review Songs</h3>
-                    <p>Confirm the detected songs or add them manually</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="feature-card">
-                    <h3>3. Create Playlist</h3>
-                    <p>Add to an existing playlist or create a new one</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <div id="root"></div>
+    {% load static %}
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-router-dom@6/umd/react-router-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script type="text/babel" src="{% static 'js/main.js' %}"></script>
+    {% csrf_token %}
 </body>
 
 </html>

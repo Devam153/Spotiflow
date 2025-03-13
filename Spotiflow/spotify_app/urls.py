@@ -1,3 +1,4 @@
+
 from django.urls import path
 from . import views
 
@@ -10,4 +11,9 @@ urlpatterns = [
     path('completion/', views.completion, name='completion'),
     path('process-image/', views.process_image, name='process_image'),
     path('callback/', views.spotify_callback, name='spotify_callback'),
+    
+    # API endpoints for React app
+    path('api/playlists/', views.get_playlists, name='get_playlists'),
+    path('api/process-image/', views.process_image, name='process_image_api'),
+    path('api/create-playlist/', views.create_playlist, name='create_playlist'),
 ]
