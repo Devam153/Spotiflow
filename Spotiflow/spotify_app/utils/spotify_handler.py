@@ -1,15 +1,13 @@
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 from django.conf import settings
-import os
-from dotenv import load_dotenv
-load_dotenv()
+
 class SpotifyHandler:
     def __init__(self):
         # Use a comprehensive scope that includes all required permissions        
         self.sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
-            client_id=os.getenv("SPOTIFY_CLIENT_ID"),
-            client_secret=os.getenv("SPOTIFY_CLIENT_SECRET"),
+            client_id=settings.SPOTIFY_CLIENT_ID,
+            client_secret=settings.SPOTIFY_CLIENT_SECRET,
             redirect_uri=settings.SPOTIFY_REDIRECT_URI,
             scope=settings.SPOTIFY_SCOPE,
             cache_path=None  # Don't cache tokens to prevent stale credentials

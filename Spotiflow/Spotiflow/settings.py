@@ -71,8 +71,8 @@ TESSERACT_CMD_PATH = r'C:\Users\DEVAM\AppData\Local\Programs\Tesseract-OCR\tesse
 # Spotify Configuration
 SPOTIFY_CLIENT_ID = os.getenv("SPOTIFY_CLIENT_ID")
 SPOTIFY_CLIENT_SECRET = os.getenv("SPOTIFY_CLIENT_SECRET")
-SPOTIFY_REDIRECT_URI = 'http://localhost:3000'
-SPOTIFY_SCOPE = 'playlist-modify-public user-library-modify playlist-read-private'
+SPOTIFY_REDIRECT_URI = os.getenv("SPOTIFY_REDIRECT_URI")
+SPOTIFY_SCOPE = os.getenv("SPOTIFY_SCOPE")
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = 'static/'
