@@ -1,6 +1,8 @@
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -67,8 +69,8 @@ DATABASES = {
 TESSERACT_CMD_PATH = r'C:\Users\DEVAM\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'  # Adjust this path based on your system
 
 # Spotify Configuration
-SPOTIFY_CLIENT_ID = '073e9adeb41349e8b574719ea607870f'
-SPOTIFY_CLIENT_SECRET = '7bf17e18a43a44aaa064a420e9344e03'
+SPOTIFY_CLIENT_ID = os.getenv("SPOTIFY_CLIENT_ID")
+SPOTIFY_CLIENT_SECRET = os.getenv("SPOTIFY_CLIENT_SECRET")
 SPOTIFY_REDIRECT_URI = 'http://localhost:3000'
 SPOTIFY_SCOPE = 'playlist-modify-public user-library-modify playlist-read-private'
 
