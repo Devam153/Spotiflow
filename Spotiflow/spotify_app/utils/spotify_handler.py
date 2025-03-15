@@ -4,11 +4,15 @@ from django.conf import settings
 
 class SpotifyHandler:
     def __init__(self):
+        # Use a comprehensive scope that includes all required permissions
+        scope = "playlist-modify-public user-library-modify playlist-read-private"
+        
         self.sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
             client_id=settings.SPOTIFY_CLIENT_ID,
             client_secret=settings.SPOTIFY_CLIENT_SECRET,
             redirect_uri=settings.SPOTIFY_REDIRECT_URI,
-            scope=settings.SPOTIFY_SCOPE
+            scope=scope,
+            cache_path=None  # Don't cache tokens to prevent stale credentials
         ))
 
     def search_for_songs(self, songs_dict):

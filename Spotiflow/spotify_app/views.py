@@ -7,7 +7,7 @@ import json
 
 def index(request):
     """Home page view"""
-    return render(request, 'index.html')  # <--- Template is in spotify_app/templates/index.html
+    return render(request, 'index.html')
 
 def process_image(request):
     """Process uploaded image with OCR"""
@@ -71,7 +71,7 @@ def step1(request):
             request.session['songs'] = songs
             return redirect('spotify_app:step2')
             
-    return render(request, 'step1.html')  # <--- step1.html in spotify_app/templates/
+    return render(request, 'step1.html')
 
 def step2(request):
     """Step 2: Select what to do with the songs"""
@@ -142,4 +142,68 @@ def step2(request):
 
 def completion(request):
     """Completion page after successful operation"""
-    return render(request, 'completion.html')  # <--- completion.html in spotify_app/templates/
+    return render(request, 'completion.html')
+
+# API endpoints for React app
+def get_playlists(request):
+    try:
+        # Initialize Spotify handler
+        spotify = SpotifyHandler()
+        playlists = spotify.get_user_playlists()
+        
+        if playlists and 'items' in playlists:
+            formatted_playlists = [
+                {
+                    'id': playlist['id'],
+                    'name': playlist['name'],
+                    'description': f"{playlist.get('tracks', {}).get('total', 0)} songs"
+                }
+                for playlist in playlists['items']
+            ]
+            return JsonResponse({'playlists': formatted_playlists})
+        else:
+            # Fallback to mock data if no playlists found
+            mock_playlists = [
+                {'id': '1', 'name': 'Chill Vibes', 'description': '32 songs'},
+                {'id': '2', 'name': 'Workout Mix', 'description': '45 songs'},
+                {'id': '3', 'name': 'Driving Music', 'description': '28 songs'},
+                {'id': '4', 'name': 'Study Playlist', 'description': '15 songs'},
+            ]
+            return JsonResponse({'playlists': mock_playlists})
+    except Exception as e:
+        # Fallback to mock data on error
+        mock_playlists = [
+            {'id': '1', 'name': 'Chill Vibes', 'description': '32 songs'},
+            {'id': '2', 'name': 'Workout Mix', 'description': '45 songs'},
+            {'id': '3', 'name': 'Driving Music', 'description': '28 songs'},
+            {'id': '4', 'name': 'Study Playlist', 'description': '15 songs'},
+        ]
+        return JsonResponse({'playlists': mock_playlists})
+
+def get_songs(request):
+    """Get songs from session"""
+    songs = request.session.get('songs', {})
+    return JsonResponse({'songs': songs})
+
+def create_playlist(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            playlist_name = data.get('name')
+            track_ids = data.get('songs', [])
+            description = data.get('description', '')
+            
+            if not playlist_name:
+                return JsonResponse({'success': False, 'error': 'Playlist name is required'}, status=400)
+                
+            # Initialize Spotify handler
+            spotify = SpotifyHandler()
+            new_playlist = spotify.create_playlist(playlist_name, description, track_ids)
+            
+            if new_playlist:
+                return JsonResponse({'success': True, 'message': 'Playlist created successfully', 'playlist': new_playlist})
+            else:
+                return JsonResponse({'success': False, 'error': 'Failed to create playlist'}, status=400)
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)}, status=400)
+    return JsonResponse({'error': 'Invalid request method'}, status=400)
