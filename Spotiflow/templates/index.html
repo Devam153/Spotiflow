@@ -2,96 +2,300 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spotiflow - Convert Images to Spotify Playlists</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Spotiflow - Automate your Spotify experience</title>
+    <meta name="description" content="Convert song lists from images to Spotify playlists in seconds" />
+    <meta name="author" content="Spotiflow" />
+    <meta property="og:image" content="/og-image.png" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <style>
+        /* Base styles */
+        :root {
+            --background: #191414;
+            --foreground: #FFFFFF;
+            --primary: #1DB954;
+            --primary-glow: rgba(29, 185, 84, 0.5);
+            --muted: #333333;
+            --muted-foreground: #B3B3B3;
+            --border-radius: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            background-color: #191414;
-            color: #FFFFFF;
-            font-family: 'Circular', Arial, sans-serif;
+            background-color: var(--background);
+            color: var(--foreground);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
         }
 
         .container {
-            max-width: 800px;
+            max-width: 1200px;
+            width: 100%;
             margin: 0 auto;
             padding: 2rem;
         }
 
+        /* Header section */
         .header {
             text-align: center;
             margin-bottom: 3rem;
+            opacity: 0;
+            transform: translateY(-20px);
+            animation: fadeIn 0.8s ease-out forwards;
         }
 
-        .spotify-green {
-            color: #1DB954;
+        .title {
+            font-size: 5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            letter-spacing: -1px;
         }
 
-        .btn-spotify {
-            background-color: #1DB954;
-            color: white;
-            border: none;
-            border-radius: 30px;
-            padding: 10px 30px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin: 20px 0;
+        .divider {
+            height: 1px;
+            width: 100%;
+            background: linear-gradient(to right, transparent, var(--primary), transparent);
+            margin: 1rem auto 2rem;
         }
 
-        .btn-spotify:hover {
-            background-color: #1ed760;
-            color: white;
+        .subtitle {
+            font-size: 1.5rem;
+            font-weight: 400;
+            color: var(--foreground);
+            opacity: 0.9;
         }
 
-        .feature-section {
-            margin: 2rem 0;
+        /* Steps section */
+        .steps-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-bottom: 4rem;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.8s ease-out 0.4s forwards;
+        }
+
+        @media (max-width: 768px) {
+            .steps-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             text-align: center;
         }
 
-        .feature-card {
-            background-color: #282828;
-            border-radius: 10px;
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        .step-number {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 4rem;
+            height: 4rem;
+            border-radius: 50%;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+
+        .step-number::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--primary);
+            border-radius: 50%;
+            opacity: 0;
+            transform: scale(0.8);
+            z-index: -1;
+            transition: all 0.3s ease;
+        }
+
+        .step:hover .step-number::before {
+            opacity: 0.15;
+            transform: scale(1.2);
+        }
+
+        .step-image {
+            width: 100%;
+            height: 200px;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+            position: relative;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .step-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            transition: transform 0.5s ease;
+        }
+
+        .step:hover .step-image img {
+            transform: scale(1.05);
+        }
+
+        .step-description {
+            font-size: 1rem;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+
+        /* Continue button */
+        .button-container {
+            text-align: center;
+            margin-top: 1rem;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.8s ease-out 0.8s forwards;
+        }
+
+        .continue-btn {
+            display: inline-block;
+            background-color: var(--primary);
+            color: var(--background);
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            padding: 1rem 3rem;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px var(--primary-glow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .continue-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transform: translateX(-100%);
+        }
+
+        .continue-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 30px var(--primary-glow);
+        }
+
+        .continue-btn:hover::after {
+            animation: shimmer 1.5s infinite;
+        }
+
+        @keyframes shimmer {
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(29, 185, 84, 0.7);
+            }
+
+            70% {
+                box-shadow: 0 0 0 10px rgba(29, 185, 84, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(29, 185, 84, 0);
+            }
         }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <div class="header">
-            <h1><span class="spotify-green">Spoti</span>flow</h1>
-            <p class="lead">Convert song lists from images to Spotify playlists in seconds</p>
+        <header class="header">
+            <h1 class="title">Spotiflow</h1>
+            <div class="divider"></div>
+            <p class="subtitle">Automate your Spotify experience</p>
+        </header>
 
-            <a href="{% url 'spotify_app:step1' %}" class="btn btn-spotify btn-lg">Get Started</a>
-        </div>
+        <main>
+            <div class="steps-container">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-image">
+                        <img src="/static/images/songs.jpg" alt="Step 1: Add an image or enter songs manually"
+                            onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'100%25\' height=\'100%25\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%231DB954\' stroke-width=\'1\' stroke-linecap=\'round\' stroke-linejoin=\'round\'%3E%3Crect width=\'18\' height=\'18\' x=\'3\' y=\'3\' rx=\'2\' ry=\'2\'/%3E%3Ccircle cx=\'9\' cy=\'9\' r=\'2\'/%3E%3Cpath d=\'m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21\'/%3E%3C/svg%3E';" />
+                    </div>
+                    <p class="step-description">Add an image / enter songs manually</p>
+                </div>
 
-        <div class="row feature-section">
-            <div class="col-md-4">
-                <div class="feature-card">
-                    <h3>1. Upload Image</h3>
-                    <p>Upload an image containing a list of songs and artists</p>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-image">
+                        <img src="/static/images/playlist.jpg"
+                            alt="Step 2: Select existing playlist or create new playlist"
+                            onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'100%25\' height=\'100%25\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%231DB954\' stroke-width=\'1\' stroke-linecap=\'round\' stroke-linejoin=\'round\'%3E%3Crect width=\'18\' height=\'18\' x=\'3\' y=\'3\' rx=\'2\' ry=\'2\'/%3E%3Ccircle cx=\'9\' cy=\'9\' r=\'2\'/%3E%3Cpath d=\'m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21\'/%3E%3C/svg%3E';" />
+                    </div>
+                    <p class="step-description">Select existing playlist / create new playlist</p>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-image">
+                        <img src="/static/images/done.jpg" alt="Step 3: Enjoy!"
+                            onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'100%25\' height=\'100%25\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%231DB954\' stroke-width=\'1\' stroke-linecap=\'round\' stroke-linejoin=\'round\'%3E%3Crect width=\'18\' height=\'18\' x=\'3\' y=\'3\' rx=\'2\' ry=\'2\'/%3E%3Ccircle cx=\'9\' cy=\'9\' r=\'2\'/%3E%3Cpath d=\'m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21\'/%3E%3C/svg%3E';" />
+                    </div>
+                    <p class="step-description">ENJOY!</p>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="feature-card">
-                    <h3>2. Review Songs</h3>
-                    <p>Confirm the detected songs or add them manually</p>
-                </div>
+
+            <div class="button-container">
+                <a href="/step1/" class="continue-btn">Continue</a>
             </div>
-            <div class="col-md-4">
-                <div class="feature-card">
-                    <h3>3. Create Playlist</h3>
-                    <p>Add to an existing playlist or create a new one</p>
-                </div>
-            </div>
-        </div>
+        </main>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
+    <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
+    <script type="module" src="/src/main.tsx"></script>
 </body>
 
 </html>
