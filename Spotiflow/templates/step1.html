@@ -5,363 +5,534 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Upload Songs - Spotiflow</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <style>
+        /* Base styles */
+        :root {
+            --background: #121212;
+            --foreground: #FFFFFF;
+            --primary: #1DB954;
+            --primary-glow: rgba(29, 185, 84, 0.5);
+            --muted: #333333;
+            --muted-foreground: #B3B3B3;
+            --border-radius: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            background-color: #191414;
-            color: #FFFFFF;
-            font-family: 'Circular', Arial, sans-serif;
+            background-color: var(--background);
+            color: var(--foreground);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 2rem;
         }
 
         .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .spotify-green {
-            color: #1DB954;
-        }
-
-        .btn-spotify {
-            background-color: #1DB954;
-            color: white;
-            border: none;
-            border-radius: 30px;
-            padding: 10px 30px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin: 20px 0;
-        }
-
-        .btn-spotify:hover {
-            background-color: #1ed760;
-            color: white;
-        }
-
-        .content-section {
-            background-color: #282828;
-            border-radius: 10px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .upload-area {
-            border: 2px dashed #1DB954;
-            border-radius: 10px;
-            padding: 3rem 1rem;
-            text-align: center;
-            cursor: pointer;
-            margin-bottom: 1.5rem;
-        }
-
-        .upload-area:hover {
-            background-color: rgba(29, 185, 84, 0.1);
-        }
-
-        .upload-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            color: #1DB954;
-        }
-
-        .or-divider {
-            display: flex;
-            align-items: center;
-            text-align: center;
-            margin: 2rem 0;
-        }
-
-        .or-divider::before,
-        .or-divider::after {
-            content: '';
-            flex: 1;
-            border-bottom: 1px solid #444;
-        }
-
-        .or-divider::before {
-            margin-right: 1rem;
-        }
-
-        .or-divider::after {
-            margin-left: 1rem;
-        }
-
-        .form-control {
-            background-color: #333;
-            border: none;
-            color: white;
-        }
-
-        .form-control:focus {
-            background-color: #444;
-            color: white;
+            max-width: 1200px;
+            width: 100%;
         }
 
         .step-indicator {
             display: flex;
             justify-content: center;
-            margin-bottom: 2rem;
+            margin-bottom: 3rem;
         }
 
-        .step {
-            display: flex;
-            align-items: center;
-            margin: 0 1rem;
-        }
-
-        .step-number {
-            background-color: #1DB954;
-            color: white;
-            width: 30px;
-            height: 30px;
+        .step-circle {
+            width: 70px;
+            height: 70px;
+            border: 2px solid var(--primary);
             border-radius: 50%;
             display: flex;
-            justify-content: center;
             align-items: center;
-            margin-right: 10px;
-            font-weight: bold;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--primary);
+            margin: 0 auto 1rem;
         }
 
-        .step.inactive .step-number {
-            background-color: #282828;
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
         }
 
-        #previewContainer {
-            margin-top: 1.5rem;
-            max-height: 300px;
+        @media (max-width: 768px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+        }
+
+        .upload-area {
+            border: 2px dashed var(--primary);
+            border-radius: var(--border-radius);
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .upload-icon {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 1rem;
+        }
+
+        .upload-text {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-info {
+            color: var(--muted-foreground);
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .file-limit {
+            color: var(--muted-foreground);
+            font-size: 0.8rem;
+            margin-top: 1rem;
+        }
+
+        .upload-btn {
+            background-color: var(--primary);
+            color: var(--background);
+            border: none;
+            border-radius: 30px;
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+
+        .manual-entry {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border-radius: var(--border-radius);
+            background-color: #333;
+            border: none;
+            color: var(--foreground);
+            font-size: 1rem;
+        }
+
+        .input-field:focus {
+            outline: 1px solid var(--primary);
+        }
+
+        .add-btn {
+            background-color: var(--primary);
+            color: var(--background);
+            border: none;
+            border-radius: 30px;
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            align-self: flex-end;
+            gap: 0.5rem;
+        }
+
+        .songs-list {
+            margin-top: 2rem;
+            max-height: 200px;
             overflow-y: auto;
+        }
+
+        .songs-title {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
         }
 
         .song-item {
             background-color: #333;
-            border: none;
+            padding: 0.75rem 1rem;
+            border-radius: var(--border-radius);
             margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .message {
-            margin: 1rem 0;
-            padding: 0.75rem;
-            border-radius: 5px;
+        .song-empty {
+            text-align: center;
+            color: var(--muted-foreground);
+            padding: 1.5rem;
         }
 
-        .message.error {
-            background-color: rgba(220, 53, 69, 0.2);
-            color: #dc3545;
+        .continue-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 2rem;
         }
 
-        .message.success {
-            background-color: rgba(40, 167, 69, 0.2);
-            color: #28a745;
+        .continue-btn {
+            background-color: var(--primary);
+            color: var(--background);
+            border: none;
+            border-radius: 30px;
+            padding: 1rem 3rem;
+            font-weight: 600;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 3px solid var(--primary);
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        #uploadStatus {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        #previewContainer {
+            margin-top: 1rem;
         }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <div class="header">
-            <h1><span class="spotify-green">Spoti</span>flow</h1>
-            <p>Step 1: Upload Your Songs</p>
-        </div>
-
         <div class="step-indicator">
-            <div class="step">
-                <div class="step-number">1</div>
-                <span>Upload Songs</span>
-            </div>
-            <div class="step inactive">
-                <div class="step-number">2</div>
-                <span>Create Playlist</span>
-            </div>
-            <div class="step inactive">
-                <div class="step-number">3</div>
-                <span>Done</span>
-            </div>
+            <div class="step-circle">1</div>
         </div>
 
-        {% if messages %}
-        {% for message in messages %}
-        <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
-            {{ message }}
-        </div>
-        {% endfor %}
-        {% endif %}
+        <div class="content-grid">
+            <div class="upload-section">
+                <h2 class="section-title">Upload an Image</h2>
 
-        <div class="content-section">
-            <h3 class="mb-4">Upload an image with a list of songs</h3>
-
-            <div class="upload-area" id="uploadArea">
-                <div class="upload-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor"
-                        viewBox="0 0 16 16">
-                        <path
-                            d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z" />
-                        <path
-                            d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708l3-3z" />
+                <div class="upload-area" id="uploadArea">
+                    <svg class="upload-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                        stroke="#1DB954" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                        <circle cx="8.5" cy="8.5" r="1.5" />
+                        <path d="M21 15l-5-5L5 21" />
                     </svg>
+                    <p class="upload-text">Drag & drop an image here to start</p>
+                    <p class="upload-info">Supports: JPG, PNG, or WEBP</p>
+                    <p class="file-limit">File Size Limit: 20MB</p>
+                    <button class="upload-btn">Upload Image</button>
+                    <input type="file" id="imageUpload" style="display: none;" accept="image/*">
                 </div>
-                <h5>Drag & Drop an image here</h5>
-                <p class="text-muted">or click to browse files</p>
-                <input type="file" id="imageUpload" style="display: none;" accept="image/*">
+
+                <div id="uploadStatus" style="display: none;">
+                    <div class="spinner"></div>
+                    <p>Processing image...</p>
+                </div>
             </div>
 
-            <div id="uploadStatus" style="display: none;">
-                <div class="d-flex justify-content-center">
-                    <div class="spinner-border text-light" role="status">
-                        <span class="visually-hidden">Loading...</span>
+            <div class="manual-entry">
+                <h2 class="section-title">Enter Songs Manually</h2>
+
+                <div class="input-group">
+                    <label class="input-label" for="songName">Song Name</label>
+                    <input type="text" id="songName" class="input-field" placeholder="Enter song name">
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label" for="artistName">Artist Name</label>
+                    <input type="text" id="artistName" class="input-field" placeholder="Enter artist name">
+                </div>
+
+                <button id="addSongBtn" class="add-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    Add Song
+                </button>
+
+                <div class="songs-list">
+                    <h3 class="songs-title">Your Songs</h3>
+                    <div id="songsList">
+                        <div class="song-empty">No songs added yet</div>
                     </div>
                 </div>
-                <p class="text-center mt-2">Processing image...</p>
             </div>
+        </div>
 
-            <div id="previewContainer" style="display: none;">
-                <h4>Detected Songs:</h4>
-                <ul class="list-group" id="songsList"></ul>
+        <div id="previewContainer" style="display: none;">
+            <h3 class="songs-title">Detected Songs:</h3>
+            <div id="detectedSongsList"></div>
+        </div>
 
-                <div class="mt-4">
-                    <button id="continueButton" class="btn btn-spotify">Continue</button>
-                </div>
-            </div>
-
-            <div class="or-divider">
-                <span>OR</span>
-            </div>
-
-            <h3 class="mb-3">Enter songs manually</h3>
-            <form method="post" action="{% url 'spotify_app:step1' %}">
-                {% csrf_token %}
-                <div class="mb-3">
-                    <label for="manualSongs" class="form-label">Enter songs (one per line, format: "Song Title - Artist
-                        Name")</label>
-                    <textarea class="form-control" id="manualSongs" name="manual_songs" rows="6"
-                        placeholder="Enter songs one per line, e.g:&#10;Bohemian Rhapsody - Queen&#10;Hotel California - Eagles"></textarea>
-                </div>
-                <div class="text-center">
-                    <button type="submit" class="btn btn-spotify">Continue</button>
-                    <a href="{% url 'spotify_app:index' %}" class="btn btn-outline-light ms-2">Back</a>
-                </div>
-            </form>
+        <div class="continue-container">
+            <button id="continueButton" class="continue-btn">Continue</button>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Handle drag & drop and file upload
-        const uploadArea = document.getElementById('uploadArea');
-        const imageUpload = document.getElementById('imageUpload');
-        const uploadStatus = document.getElementById('uploadStatus');
-        const previewContainer = document.getElementById('previewContainer');
-        const songsList = document.getElementById('songsList');
-        const continueButton = document.getElementById('continueButton');
+        document.addEventListener('DOMContentLoaded', function () {
+            const uploadArea = document.getElementById('uploadArea');
+            const imageUpload = document.getElementById('imageUpload');
+            const uploadStatus = document.getElementById('uploadStatus');
+            const previewContainer = document.getElementById('previewContainer');
+            const songNameInput = document.getElementById('songName');
+            const artistNameInput = document.getElementById('artistName');
+            const addSongBtn = document.getElementById('addSongBtn');
+            const songsList = document.getElementById('songsList');
+            const detectedSongsList = document.getElementById('detectedSongsList');
+            const continueButton = document.getElementById('continueButton');
 
-        // Prevent default drag behaviors
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-            uploadArea.addEventListener(eventName, preventDefaults, false);
-            document.body.addEventListener(eventName, preventDefaults, false);
-        });
+            // Store manual songs
+            let manualSongs = [];
 
-        // Highlight drop area when item is dragged over it
-        ['dragenter', 'dragover'].forEach(eventName => {
-            uploadArea.addEventListener(eventName, highlight, false);
-        });
+            // Prevent default drag behaviors
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, preventDefaults, false);
+                document.body.addEventListener(eventName, preventDefaults, false);
+            });
 
-        ['dragleave', 'drop'].forEach(eventName => {
-            uploadArea.addEventListener(eventName, unhighlight, false);
-        });
+            // Highlight drop area when item is dragged over it
+            ['dragenter', 'dragover'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, highlight, false);
+            });
 
-        // Handle dropped files
-        uploadArea.addEventListener('drop', handleDrop, false);
+            ['dragleave', 'drop'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, unhighlight, false);
+            });
 
-        // Handle clicked upload
-        uploadArea.addEventListener('click', () => {
-            imageUpload.click();
-        });
+            // Handle dropped files
+            uploadArea.addEventListener('drop', handleDrop, false);
 
-        imageUpload.addEventListener('change', handleFiles);
+            // Handle clicked upload
+            uploadArea.querySelector('.upload-btn').addEventListener('click', () => {
+                imageUpload.click();
+            });
 
-        function preventDefaults(e) {
-            e.preventDefault();
-            e.stopPropagation();
-        }
+            imageUpload.addEventListener('change', handleFiles);
 
-        function highlight() {
-            uploadArea.classList.add('bg-dark');
-        }
+            // Add song manually
+            addSongBtn.addEventListener('click', addSongManually);
 
-        function unhighlight() {
-            uploadArea.classList.remove('bg-dark');
-        }
-
-        function handleDrop(e) {
-            const dt = e.dataTransfer;
-            const files = dt.files;
-            handleFiles(files);
-        }
-
-        function handleFiles(e) {
-            const files = e.target ? e.target.files : e;
-            if (files && files[0]) {
-                const file = files[0];
-                uploadFile(file);
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
             }
-        }
 
-        function uploadFile(file) {
-            // Show loading
-            uploadArea.style.display = 'none';
-            uploadStatus.style.display = 'block';
+            function highlight() {
+                uploadArea.style.borderColor = '#1DB954';
+                uploadArea.style.backgroundColor = 'rgba(29, 185, 84, 0.1)';
+            }
 
-            const formData = new FormData();
-            formData.append('image', file);
-            formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+            function unhighlight() {
+                uploadArea.style.borderColor = '#1DB954';
+                uploadArea.style.backgroundColor = 'transparent';
+            }
 
-            fetch('{% url "spotify_app:process_image" %}', {
-                method: 'POST',
-                body: formData
-            })
-                .then(response => response.json())
-                .then(data => {
-                    uploadStatus.style.display = 'none';
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                handleFiles(files);
+            }
 
-                    if (data.success) {
-                        previewContainer.style.display = 'block';
+            function handleFiles(e) {
+                const files = e.target ? e.target.files : e;
+                if (files && files[0]) {
+                    const file = files[0];
+                    uploadFile(file);
+                }
+            }
 
-                        // Display detected songs
-                        songsList.innerHTML = '';
-                        if (Object.keys(data.songs).length === 0) {
-                            songsList.innerHTML = '<li class="list-group-item song-item text-white">No songs detected</li>';
-                            continueButton.disabled = true;
-                        } else {
-                            for (const [song, artist] of Object.entries(data.songs)) {
-                                const li = document.createElement('li');
-                                li.className = 'list-group-item song-item text-white';
-                                li.innerHTML = `<strong>${song}</strong> ${artist ? '- ' + artist : ''}`;
-                                songsList.appendChild(li);
-                            }
-                            continueButton.disabled = false;
-                        }
-                    } else {
-                        alert('Error processing image: ' + data.error);
-                        uploadArea.style.display = 'block';
-                    }
+            function uploadFile(file) {
+                // Show loading
+                uploadArea.style.display = 'none';
+                uploadStatus.style.display = 'block';
+
+                const formData = new FormData();
+                formData.append('image', file);
+                formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+                fetch('{% url "spotify_app:process_image" %}', {
+                    method: 'POST',
+                    body: formData
                 })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Error uploading image. Please try again.');
-                    uploadStatus.style.display = 'none';
-                    uploadArea.style.display = 'block';
-                });
-        }
+                    .then(response => response.json())
+                    .then(data => {
+                        uploadStatus.style.display = 'none';
 
-        // Handle continue button click
-        continueButton.addEventListener('click', () => {
-            window.location.href = '{% url "spotify_app:step2" %}';
+                        if (data.success) {
+                            previewContainer.style.display = 'block';
+
+                            // Display detected songs
+                            detectedSongsList.innerHTML = '';
+                            if (Object.keys(data.songs).length === 0) {
+                                detectedSongsList.innerHTML = '<div class="song-empty">No songs detected</div>';
+                            } else {
+                                for (const [song, artist] of Object.entries(data.songs)) {
+                                    const songItem = document.createElement('div');
+                                    songItem.className = 'song-item';
+                                    songItem.innerHTML = `<strong>${song}</strong> ${artist ? '- ' + artist : ''}`;
+                                    detectedSongsList.appendChild(songItem);
+
+                                    // Add to manual songs array
+                                    manualSongs.push({ song, artist });
+                                }
+
+                                // Update manual songs display
+                                updateSongsList();
+                            }
+                        } else {
+                            alert('Error processing image: ' + data.error);
+                            uploadArea.style.display = 'block';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Error uploading image. Please try again.');
+                        uploadStatus.style.display = 'none';
+                        uploadArea.style.display = 'block';
+                    });
+            }
+
+            function addSongManually() {
+                const songName = songNameInput.value.trim();
+                const artistName = artistNameInput.value.trim();
+
+                if (songName === '') {
+                    alert('Please enter a song name');
+                    return;
+                }
+
+                // Add to array
+                manualSongs.push({
+                    song: songName,
+                    artist: artistName
+                });
+
+                // Clear inputs
+                songNameInput.value = '';
+                artistNameInput.value = '';
+
+                // Update display
+                updateSongsList();
+            }
+
+            function updateSongsList() {
+                if (manualSongs.length === 0) {
+                    songsList.innerHTML = '<div class="song-empty">No songs added yet</div>';
+                } else {
+                    songsList.innerHTML = '';
+                    manualSongs.forEach((song, index) => {
+                        const songItem = document.createElement('div');
+                        songItem.className = 'song-item';
+                        songItem.innerHTML = `
+                            <span><strong>${song.song}</strong> ${song.artist ? '- ' + song.artist : ''}</span>
+                            <button class="remove-btn" data-index="${index}">✕</button>
+                        `;
+                        songsList.appendChild(songItem);
+                    });
+
+                    // Add event listeners to remove buttons
+                    document.querySelectorAll('.remove-btn').forEach(btn => {
+                        btn.addEventListener('click', function () {
+                            const index = parseInt(this.getAttribute('data-index'));
+                            manualSongs.splice(index, 1);
+                            updateSongsList();
+                        });
+                    });
+                }
+            }
+
+            // Handle continue button click
+            continueButton.addEventListener('click', () => {
+                if (manualSongs.length === 0) {
+                    alert('Please add at least one song');
+                    return;
+                }
+
+                // Convert to format expected by the server
+                const songs = {};
+                manualSongs.forEach(item => {
+                    songs[item.song] = item.artist;
+                });
+
+                // Create a form and submit it
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '{% url "spotify_app:step1" %}';
+
+                const csrfInput = document.createElement('input');
+                csrfInput.type = 'hidden';
+                csrfInput.name = 'csrfmiddlewaretoken';
+                csrfInput.value = '{{ csrf_token }}';
+                form.appendChild(csrfInput);
+
+                const songsInput = document.createElement('textarea');
+                songsInput.name = 'manual_songs';
+                songsInput.style.display = 'none';
+
+                // Convert to format expected by the server
+                let formattedSongs = '';
+                manualSongs.forEach(item => {
+                    formattedSongs += item.song + (item.artist ? ' - ' + item.artist : '') + '\n';
+                });
+
+                songsInput.value = formattedSongs.trim();
+                form.appendChild(songsInput);
+
+                document.body.appendChild(form);
+                form.submit();
+            });
         });
     </script>
 </body>
