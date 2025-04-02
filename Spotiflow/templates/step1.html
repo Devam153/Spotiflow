@@ -8,7 +8,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
     <style>
-        /* Base styles */
         :root {
             --background: #121212;
             --foreground: #FFFFFF;
@@ -29,22 +28,23 @@
             background-color: var(--background);
             color: var(--foreground);
             font-family: 'Plus Jakarta Sans', sans-serif;
-            line-height: 1.6;
             min-height: 100vh;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            align-items: center;
             padding: 2rem;
         }
 
         .container {
-            max-width: 1200px;
             width: 100%;
+            max-width: 1200px;
         }
 
-        .step-indicator {
+        /* Step indicator */
+        .step-circle-container {
             display: flex;
             justify-content: center;
-            margin-bottom: 3rem;
+            margin-bottom: 4rem;
         }
 
         .step-circle {
@@ -55,15 +55,15 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2rem;
+            font-size: 2.5rem;
             color: var(--primary);
-            margin: 0 auto 1rem;
         }
 
+        /* Main content */
         .content-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 2rem;
+            gap: 3rem;
             margin-bottom: 3rem;
         }
 
@@ -73,30 +73,39 @@
             }
         }
 
+        /* Section titles */
         .section-title {
             font-size: 1.5rem;
             text-align: center;
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
             font-weight: 500;
         }
 
+        /* Upload area */
         .upload-area {
             border: 2px dashed var(--primary);
             border-radius: var(--border-radius);
-            min-height: 300px;
+            min-height: 320px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             padding: 2rem;
             cursor: pointer;
-            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .upload-area:hover {
+            background-color: rgba(29, 185, 84, 0.05);
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(29, 185, 84, 0.2);
         }
 
         .upload-icon {
-            width: 80px;
-            height: 80px;
-            margin-bottom: 1rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            width: 60px;
+            height: 60px;
         }
 
         .upload-text {
@@ -104,16 +113,15 @@
             margin-bottom: 0.5rem;
         }
 
-        .upload-info {
+        .upload-format {
             color: var(--muted-foreground);
-            margin-bottom: 1rem;
-            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
         }
 
-        .file-limit {
+        .upload-limit {
             color: var(--muted-foreground);
-            font-size: 0.8rem;
-            margin-top: 1rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
         }
 
         .upload-btn {
@@ -125,14 +133,16 @@
             font-weight: 600;
             font-size: 1rem;
             cursor: pointer;
-            margin-top: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(29, 185, 84, 0.4);
         }
 
-        .manual-entry {
-            display: flex;
-            flex-direction: column;
+        .upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(29, 185, 84, 0.6);
         }
 
+        /* Manual entry */
         .input-group {
             margin-bottom: 1.5rem;
         }
@@ -151,10 +161,19 @@
             border: none;
             color: var(--foreground);
             font-size: 1rem;
+            transition: all 0.3s ease;
         }
 
         .input-field:focus {
-            outline: 1px solid var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 2px var(--primary);
+        }
+
+        /* Add song button */
+        .add-btn-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 1.5rem;
         }
 
         .add-btn {
@@ -168,21 +187,47 @@
             cursor: pointer;
             display: flex;
             align-items: center;
-            justify-content: center;
-            align-self: flex-end;
             gap: 0.5rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(29, 185, 84, 0.4);
         }
 
-        .songs-list {
-            margin-top: 2rem;
-            max-height: 200px;
-            overflow-y: auto;
+        .add-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(29, 185, 84, 0.6);
+        }
+
+        /* Songs list */
+        .songs-section {
+            margin-top: 1rem;
         }
 
         .songs-title {
             font-size: 1.2rem;
             font-weight: 500;
             margin-bottom: 1rem;
+        }
+
+        .songs-list {
+            max-height: 170px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(29, 185, 84, 0.5) rgba(51, 51, 51, 0.1);
+        }
+
+        /* Hide scrollbar but keep functionality */
+        .songs-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .songs-list::-webkit-scrollbar-track {
+            background: rgba(51, 51, 51, 0.1);
+            border-radius: 10px;
+        }
+
+        .songs-list::-webkit-scrollbar-thumb {
+            background-color: rgba(29, 185, 84, 0.5);
+            border-radius: 10px;
         }
 
         .song-item {
@@ -193,6 +238,27 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .song-item .remove-btn {
+            background: none;
+            border: none;
+            color: var(--muted-foreground);
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: color 0.2s ease;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .song-item .remove-btn:hover {
+            color: var(--foreground);
+            background-color: rgba(255, 255, 255, 0.1);
         }
 
         .song-empty {
@@ -201,6 +267,33 @@
             padding: 1.5rem;
         }
 
+        /* Upload status */
+        #uploadStatus {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            border-top: 3px solid var(--primary);
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Continue button */
         .continue-container {
             display: flex;
             justify-content: center;
@@ -216,42 +309,82 @@
             font-weight: 600;
             font-size: 1.2rem;
             cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px var(--primary-glow);
         }
 
-        .spinner {
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top: 3px solid var(--primary);
-            width: 30px;
-            height: 30px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 1rem;
+        .continue-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 30px var(--primary-glow);
         }
 
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
+        /* Toast notifications */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+
+        .toast {
+            background-color: #333;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            animation: slideIn 0.3s ease-out;
+            max-width: 300px;
+        }
+
+        .toast.success {
+            border-left: 4px solid var(--primary);
+        }
+
+        .toast.error {
+            border-left: 4px solid #ff4757;
+        }
+
+        .toast-icon {
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+
+        .toast-message {
+            flex-grow: 1;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
             }
 
-            100% {
-                transform: rotate(360deg);
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
 
-        #uploadStatus {
-            text-align: center;
-            padding: 2rem;
-        }
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
 
-        #previewContainer {
-            margin-top: 1rem;
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <div class="step-indicator">
+        <div class="step-circle-container">
             <div class="step-circle">1</div>
         </div>
 
@@ -261,14 +394,14 @@
 
                 <div class="upload-area" id="uploadArea">
                     <svg class="upload-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                        stroke="#1DB954" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
                         <circle cx="8.5" cy="8.5" r="1.5" />
-                        <path d="M21 15l-5-5L5 21" />
+                        <polyline points="21 15 16 10 5 21" />
                     </svg>
                     <p class="upload-text">Drag & drop an image here to start</p>
-                    <p class="upload-info">Supports: JPG, PNG, or WEBP</p>
-                    <p class="file-limit">File Size Limit: 20MB</p>
+                    <p class="upload-format">Supports: JPG, PNG, or WEBP</p>
+                    <p class="upload-limit">File Size Limit: 20MB</p>
                     <button class="upload-btn">Upload Image</button>
                     <input type="file" id="imageUpload" style="display: none;" accept="image/*">
                 </div>
@@ -292,27 +425,24 @@
                     <input type="text" id="artistName" class="input-field" placeholder="Enter artist name">
                 </div>
 
-                <button id="addSongBtn" class="add-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="12" y1="5" x2="12" y2="19"></line>
-                        <line x1="5" y1="12" x2="19" y2="12"></line>
-                    </svg>
-                    Add Song
-                </button>
+                <div class="add-btn-container">
+                    <button id="addSongBtn" class="add-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                        Add Song
+                    </button>
+                </div>
 
-                <div class="songs-list">
+                <div class="songs-section">
                     <h3 class="songs-title">Your Songs</h3>
-                    <div id="songsList">
+                    <div id="songsList" class="songs-list">
                         <div class="song-empty">No songs added yet</div>
                     </div>
                 </div>
             </div>
-        </div>
-
-        <div id="previewContainer" style="display: none;">
-            <h3 class="songs-title">Detected Songs:</h3>
-            <div id="detectedSongsList"></div>
         </div>
 
         <div class="continue-container">
@@ -320,18 +450,20 @@
         </div>
     </div>
 
+    <!-- Toast container -->
+    <div class="toast-container" id="toastContainer"></div>
+
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const uploadArea = document.getElementById('uploadArea');
             const imageUpload = document.getElementById('imageUpload');
             const uploadStatus = document.getElementById('uploadStatus');
-            const previewContainer = document.getElementById('previewContainer');
             const songNameInput = document.getElementById('songName');
             const artistNameInput = document.getElementById('artistName');
             const addSongBtn = document.getElementById('addSongBtn');
             const songsList = document.getElementById('songsList');
-            const detectedSongsList = document.getElementById('detectedSongsList');
             const continueButton = document.getElementById('continueButton');
+            const toastContainer = document.getElementById('toastContainer');
 
             // Store manual songs
             let manualSongs = [];
@@ -364,6 +496,22 @@
             // Add song manually
             addSongBtn.addEventListener('click', addSongManually);
 
+            // Handle keyboard navigation
+            songNameInput.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    artistNameInput.focus();
+                }
+            });
+
+            artistNameInput.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    addSongManually();
+                    songNameInput.focus();
+                }
+            });
+
             function preventDefaults(e) {
                 e.preventDefault();
                 e.stopPropagation();
@@ -371,7 +519,7 @@
 
             function highlight() {
                 uploadArea.style.borderColor = '#1DB954';
-                uploadArea.style.backgroundColor = 'rgba(29, 185, 84, 0.1)';
+                uploadArea.style.backgroundColor = 'rgba(29, 185, 84, 0.05)';
             }
 
             function unhighlight() {
@@ -409,36 +557,32 @@
                     .then(response => response.json())
                     .then(data => {
                         uploadStatus.style.display = 'none';
+                        uploadArea.style.display = 'block';
 
                         if (data.success) {
-                            previewContainer.style.display = 'block';
-
-                            // Display detected songs
-                            detectedSongsList.innerHTML = '';
+                            // Display detected songs directly in "Your Songs" section
                             if (Object.keys(data.songs).length === 0) {
-                                detectedSongsList.innerHTML = '<div class="song-empty">No songs detected</div>';
+                                showToast('No songs detected in the image', 'error');
                             } else {
+                                // Add the detected songs to our songs array
                                 for (const [song, artist] of Object.entries(data.songs)) {
-                                    const songItem = document.createElement('div');
-                                    songItem.className = 'song-item';
-                                    songItem.innerHTML = `<strong>${song}</strong> ${artist ? '- ' + artist : ''}`;
-                                    detectedSongsList.appendChild(songItem);
-
-                                    // Add to manual songs array
-                                    manualSongs.push({ song, artist });
+                                    manualSongs.push({
+                                        song: song,
+                                        artist: artist || ''
+                                    });
                                 }
 
-                                // Update manual songs display
+                                // Update the songs list display
                                 updateSongsList();
+                                showToast(`${Object.keys(data.songs).length} songs extracted from image`, 'success');
                             }
                         } else {
-                            alert('Error processing image: ' + data.error);
-                            uploadArea.style.display = 'block';
+                            showToast('Error processing image: ' + data.error, 'error');
                         }
                     })
                     .catch(error => {
                         console.error('Error:', error);
-                        alert('Error uploading image. Please try again.');
+                        showToast('Error uploading image. Please try again.', 'error');
                         uploadStatus.style.display = 'none';
                         uploadArea.style.display = 'block';
                     });
@@ -449,7 +593,7 @@
                 const artistName = artistNameInput.value.trim();
 
                 if (songName === '') {
-                    alert('Please enter a song name');
+                    showToast('Please enter a song name', 'error');
                     return;
                 }
 
@@ -465,6 +609,7 @@
 
                 // Update display
                 updateSongsList();
+                showToast('Song added successfully', 'success');
             }
 
             function updateSongsList() {
@@ -488,6 +633,7 @@
                             const index = parseInt(this.getAttribute('data-index'));
                             manualSongs.splice(index, 1);
                             updateSongsList();
+                            showToast('Song removed', 'success');
                         });
                     });
                 }
@@ -496,15 +642,9 @@
             // Handle continue button click
             continueButton.addEventListener('click', () => {
                 if (manualSongs.length === 0) {
-                    alert('Please add at least one song');
+                    showToast('Please add at least one song', 'error');
                     return;
                 }
-
-                // Convert to format expected by the server
-                const songs = {};
-                manualSongs.forEach(item => {
-                    songs[item.song] = item.artist;
-                });
 
                 // Create a form and submit it
                 const form = document.createElement('form');
@@ -533,6 +673,37 @@
                 document.body.appendChild(form);
                 form.submit();
             });
+
+            // Toast notification function
+            function showToast(message, type = 'success') {
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+
+                let icon = '';
+                if (type === 'success') {
+                    icon = `<svg class="toast-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1DB954" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>`;
+                } else {
+                    icon = `<svg class="toast-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ff4757" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>`;
+                }
+
+                toast.innerHTML = `${icon}<div class="toast-message">${message}</div>`;
+                toastContainer.appendChild(toast);
+
+                setTimeout(() => {
+                    toast.style.opacity = '0';
+                    toast.style.transform = 'translateX(30px)';
+
+                    setTimeout(() => {
+                        toast.remove();
+                    }, 300);
+                }, 3000);
+            }
         });
     </script>
 </body>
