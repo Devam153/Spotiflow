@@ -42,9 +42,22 @@ class SpotifyHandler:
             return False
 
     def get_user_playlists(self):
-        """Get the user's playlists"""
+        """Get only playlists created by the current user"""
         try:
-            return self.sp.current_user_playlists()
+            # Get current user's ID
+            user_id = self.sp.me()['id']
+            
+            # Get all playlists
+            all_playlists = self.sp.current_user_playlists()
+            
+            # Filter to only include playlists owned by the current user
+            if all_playlists and 'items' in all_playlists:
+                all_playlists['items'] = [
+                    playlist for playlist in all_playlists['items'] 
+                    if playlist['owner']['id'] == user_id
+                ]
+            
+            return all_playlists
         except Exception as e:
             print(f"Error getting playlists: {str(e)}")
             return None

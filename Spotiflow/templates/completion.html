@@ -5,89 +5,199 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Success - Spotiflow</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <style>
+        /* Base styles */
+        :root {
+            --background: #121212;
+            --foreground: #FFFFFF;
+            --primary: #1DB954;
+            --primary-glow: rgba(29, 185, 84, 0.5);
+            --secondary: #65F396;
+            --muted: #333333;
+            --muted-foreground: #B3B3B3;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            background-color: #191414;
-            color: #FFFFFF;
-            font-family: 'Circular', Arial, sans-serif;
+            background-color: var(--background);
+            color: var(--foreground);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
         }
 
         .container {
             max-width: 800px;
+            width: 100%;
             margin: 0 auto;
-            padding: 2rem;
         }
 
+        /* Header styles */
         .header {
             text-align: center;
-            margin-bottom: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .title {
+            font-size: clamp(3rem, 8vw, 5rem);
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            letter-spacing: -1px;
         }
 
         .spotify-green {
-            color: #1DB954;
+            color: var(--primary);
+        }
+
+        /* Success content */
+        .success-container {
+            text-align: center;
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .success-icon-container {
+            margin-bottom: 2rem;
+            animation: scaleIn 0.5s 0.3s ease-out forwards;
+            transform: scale(0);
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+            }
+
+            to {
+                transform: scale(1);
+            }
+        }
+
+        .success-icon {
+            width: 128px;
+            height: 128px;
+            background-color: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        .success-icon svg {
+            width: 64px;
+            height: 64px;
+            color: white;
+            stroke-width: 3;
+        }
+
+        .success-title {
+            font-size: 1.7rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            animation: slideUp 0.5s 0.5s ease-out forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .success-message {
+            font-size: 1.2rem;
+            color: var(--muted-foreground);
+            margin-bottom: 2rem;
+            animation: slideUp 0.5s 0.6s ease-out forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        /* Action buttons */
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            animation: slideUp 0.5s 0.7s ease-out forwards;
+            opacity: 0;
+            transform: translateY(20px);
         }
 
         .btn-spotify {
-            background-color: #1DB954;
-            color: white;
+            background-color: var(--primary);
+            color: #121212;
             border: none;
             border-radius: 30px;
-            padding: 10px 30px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin: 20px 0;
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 0 15px var(--primary-glow);
         }
 
         .btn-spotify:hover {
             background-color: #1ed760;
-            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 0 25px var(--primary-glow);
         }
 
-        .content-section {
-            background-color: #282828;
-            border-radius: 10px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            text-align: center;
+        .btn-outline {
+            background-color: transparent;
+            color: var(--foreground);
+            border: 1px solid #555;
+            border-radius: 30px;
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
         }
 
-        .step-indicator {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 2rem;
+        .btn-outline:hover {
+            border-color: var(--foreground);
+            transform: translateY(-2px);
         }
 
-        .step {
-            display: flex;
-            align-items: center;
-            margin: 0 1rem;
-        }
-
-        .step-number {
-            background-color: #1DB954;
-            color: white;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-right: 10px;
-            font-weight: bold;
-        }
-
-        .success-icon {
-            font-size: 5rem;
-            color: #1DB954;
-            margin-bottom: 1rem;
-        }
-
+        /* Messages */
         .message {
             margin: 1rem 0;
             padding: 0.75rem;
             border-radius: 5px;
+            animation: fadeIn 0.3s ease-out forwards;
         }
 
         .message.error {
@@ -105,23 +215,8 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1><span class="spotify-green">Spoti</span>flow</h1>
-            <p>Success!</p>
-        </div>
-
-        <div class="step-indicator">
-            <div class="step">
-                <div class="step-number">1</div>
-                <span>Upload Songs</span>
-            </div>
-            <div class="step">
-                <div class="step-number">2</div>
-                <span>Create Playlist</span>
-            </div>
-            <div class="step">
-                <div class="step-number">3</div>
-                <span>Done</span>
-            </div>
+            <h1 class="title">Spotiflow</h1>
+            <p style="font-size: 25px; margin-top: -10px;">Success!</p>
         </div>
 
         {% if messages %}
@@ -132,26 +227,24 @@
         {% endfor %}
         {% endif %}
 
-        <div class="content-section">
-            <div class="success-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor"
-                    viewBox="0 0 16 16">
-                    <path
-                        d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
-                </svg>
+        <div class="success-container">
+            <div class="success-icon-container">
+                <div class="success-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                </div>
             </div>
 
-            <h2>Operation Completed!</h2>
-            <p class="lead">Your songs have been successfully added to Spotify.</p>
+            <h2 class="success-title">SONGS ADDED TO PLAYLIST, ENJOY!</h2>
 
-            <div class="mt-4">
-                <a href="https://open.spotify.com" target="_blank" class="btn btn-spotify">Open Spotify</a>
-                <a href="{% url 'spotify_app:index' %}" class="btn btn-outline-light ms-2">Start Over</a>
+            <div class="action-buttons">
+                <a href="https://open.spotify.com" target="_blank" class="btn-spotify">Open Spotify</a>
+                <a href="{% url 'spotify_app:index' %}" class="btn-outline">Start Over</a>
             </div>
         </div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
