@@ -4,7 +4,7 @@ import dj_database_url
 import sys
 
 # Debug - print Python path
-print(f"Settings Python path: {sys.path}")
+print(f"Python path: {sys.path}")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,7 +21,11 @@ DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'
 # Debug - print debug status
 print(f"Debug mode: {DEBUG}")
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
+ALLOWED_HOSTS = [
+    'spotiflow.onrender.com',
+    '127.0.0.1',
+    'localhost',
+]
 RENDER_EXTERNAL_URL = os.environ.get('RENDER_EXTERNAL_URL')
 if RENDER_EXTERNAL_URL:
     ALLOWED_HOSTS.append(RENDER_EXTERNAL_URL)
