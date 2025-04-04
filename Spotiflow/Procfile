@@ -1,1 +1,1 @@
-web: cd Spotiflow && gunicorn spotiflow.wsgi:application
+web: cd Spotiflow && python -m gunicorn spotiflow.wsgi:application
