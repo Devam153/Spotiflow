@@ -1,1 +1,1 @@
-web: cd Spotiflow && python -m gunicorn spotiflow.wsgi:application
+web: cd Spotiflow && PYTHONPATH=$PYTHONPATH:$(pwd) python -m gunicorn spotiflow.wsgi:application

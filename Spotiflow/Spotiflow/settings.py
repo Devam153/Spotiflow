@@ -1,16 +1,25 @@
-
 from pathlib import Path
 import os
 import dj_database_url
+import sys
+
+# Debug - print Python path
+print(f"Python path: {sys.path}")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Debug - print base directory
+print(f"Base directory: {BASE_DIR}")
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'your-secret-key-here')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'
+
+# Debug - print debug status
+print(f"Debug mode: {DEBUG}")
 
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
 RENDER_EXTERNAL_URL = os.environ.get('RENDER_EXTERNAL_URL')
