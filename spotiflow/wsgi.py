@@ -11,9 +11,13 @@ import os
 import sys
 from pathlib import Path
 
-# Add the project root directory to the Python path
-current_path = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(current_path))
+# Add the parent directory to the Python path
+current_dir = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(current_dir))
+
+# Print debug info
+print(f"WSGI startup - current directory: {current_dir}")
+print(f"WSGI startup - Python path: {sys.path}")
 
 from django.core.wsgi import get_wsgi_application
 

@@ -4,7 +4,7 @@ import dj_database_url
 import sys
 
 # Debug - print Python path
-print(f"Python path: {sys.path}")
+print(f"Settings Python path: {sys.path}")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent

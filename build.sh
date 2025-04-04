@@ -8,13 +8,10 @@ echo "Current directory: $(pwd)"
 # Install dependencies
 pip install -r requirements.txt
 
-# Navigate to the Spotiflow directory where manage.py is located
-cd Spotiflow
+# Debug - print current directory
+echo "Directory after installation: $(pwd)"
 
-# Debug - print current directory after cd
-echo "Changed to directory: $(pwd)"
-
-# Make sure the Spotiflow directory is in the Python path
+# Make sure the current directory is in the Python path
 export PYTHONPATH=$PYTHONPATH:$(pwd)
 
 # Debug - print PYTHONPATH

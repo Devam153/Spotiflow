@@ -2,16 +2,22 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
-
+from pathlib import Path
 
 def main():
     """Run administrative tasks."""
-    # Use the correct settings module path with full path structure
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'spotiflow.settings')
+    # Get the absolute path of the current directory
+    current_path = Path(__file__).resolve().parent
     
-    # Explicitly add the parent directory to the Python path
-    current_path = os.path.dirname(os.path.abspath(__file__))
-    sys.path.insert(0, current_path)
+    # Add the current directory to Python's path
+    sys.path.insert(0, str(current_path))
+    
+    # Print debug info
+    print(f"Current directory: {current_path}")
+    print(f"Python path: {sys.path}")
+    
+    # Set Django settings module
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'spotiflow.settings')
     
     try:
         from django.core.management import execute_from_command_line
