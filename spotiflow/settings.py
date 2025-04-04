@@ -16,8 +16,7 @@ print(f"Base directory: {BASE_DIR}")
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'your-secret-key-here')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'
-
+DEBUG = True
 # Debug - print debug status
 print(f"Debug mode: {DEBUG}")
 
