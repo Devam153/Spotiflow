@@ -7,7 +7,7 @@ import json
 
 def index(request):
     """Home page view"""
-    return render(request, 'templates/index.html')
+    return render(request, 'index.html')
 
 def process_image(request):
     """Process uploaded image with OCR"""
@@ -71,7 +71,7 @@ def step1(request):
             request.session['songs'] = songs
             return redirect('spotify_app:step2')
             
-    return render(request, 'templates/step1.html')
+    return render(request, 'step1.html')
 
 def step2(request):
     """Step 2: Select what to do with the songs"""
@@ -93,7 +93,7 @@ def step2(request):
         
         if not track_ids:
             messages.warning(request, "No songs were found on Spotify.")
-            return render(request, 'templates/step2.html', {'songs': songs})
+            return render(request, 'step2.html', {'songs': songs})
         
         # Store track IDs in session
         request.session['track_ids'] = track_ids
@@ -132,17 +132,17 @@ def step2(request):
     # Get user playlists for display
     try:
         playlists = spotify.get_user_playlists()
-        return render(request, 'templates/step2.html', {
+        return render(request, 'step2.html', {
             'songs': songs,
             'playlists': playlists['items'] if playlists else []
         })
     except Exception as e:
         messages.error(request, f"Failed to load Spotify playlists: {str(e)}")
-        return render(request, 'templates/step2.html', {'songs': songs})
+        return render(request, 'step2.html', {'songs': songs})
 
 def completion(request):
     """Completion page after successful operation"""
-    return render(request, 'templates/completion.html')
+    return render(request, 'completion.html')
 
 # API endpoints for React app
 def get_playlists(request):
