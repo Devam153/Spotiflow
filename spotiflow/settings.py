@@ -1,17 +1,8 @@
 from pathlib import Path
 import os
 from dotenv import load_dotenv
-import sys
-import logging
-import shutil
-import subprocess
+
 load_dotenv()
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
-    handlers=[logging.StreamHandler()]
-)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -83,61 +74,8 @@ DATABASES = {
     }
 }
 
-
-# Render.com environment detection
-IS_RENDER = bool(os.environ.get('RENDER', False))
-if IS_RENDER:
-    print("Running in Render.com environment")
-    # On Render, we won't have Tesseract installed
-    OCR_ENABLED = False
-    TESSERACT_CMD_PATH = None
-else:
-    # Try to detect Tesseract path automatically for local development
-    def find_tesseract_path():
-        # Check common locations
-        common_paths = [
-            r'C:\Program Files\Tesseract-OCR\tesseract.exe',
-            r'C:\Users\DEVAM\AppData\Local\Programs\Tesseract-OCR\tesseract.exe',
-            r'C:\Program Files (x86)\Tesseract-OCR\tesseract.exe',
-            '/usr/bin/tesseract',
-            '/usr/local/bin/tesseract',
-            '/app/.apt/usr/bin/tesseract'
-        ]
-        
-        for path in common_paths:
-            if os.path.exists(path):
-                return path
-        
-        # Try using which command (for Unix systems)
-        try:
-            path = subprocess.check_output(['which', 'tesseract']).decode().strip()
-            if path and os.path.exists(path):
-                return path
-        except (subprocess.SubprocessError, FileNotFoundError):
-            pass
-        
-        # Try using shutil.which
-        try:
-            path = shutil.which('tesseract')
-            if path:
-                return path
-        except Exception:
-            pass
-        
-        return None
-
-    # Set Tesseract path for local development
-    TESSERACT_CMD_PATH = find_tesseract_path()
-    OCR_ENABLED = TESSERACT_CMD_PATH is not None
-    
-    if TESSERACT_CMD_PATH:
-        print(f"Tesseract found at: {TESSERACT_CMD_PATH}")
-    else:
-        print("WARNING: Tesseract not found automatically. OCR functionality may be limited.")
-
-# Flag for the application to know if OCR is available
-OCR_AVAILABLE = OCR_ENABLED if 'OCR_ENABLED' in locals() else False
-
+# Tesseract Configuration (Production & Local)
+TESSERACT_CMD_PATH = os.getenv("TESSERACT_CMD_PATH", "/usr/bin/tesseract")
 
 # Spotify Configuration
 SPOTIFY_CLIENT_ID = os.getenv("SPOTIFY_CLIENT_ID")
