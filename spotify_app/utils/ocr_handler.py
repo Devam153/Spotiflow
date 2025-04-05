@@ -8,7 +8,7 @@ import os
 class OCRHandler:
     def __init__(self):
         # Set the tesseract path directly to match your working code
-        pytesseract.pytesseract.tesseract_cmd = os.getenv("TESSERACT_CMD_PATH")
+        pytesseract.pytesseract.tesseract_cmd = '/usr/bin/tesseract'
         
     def process_image(self, image):
         """Process the uploaded image to extract songs"""

@@ -2,6 +2,14 @@
 # exit on error
 set -o errexit
 
+# Install system packages from apt.txt if available
+if [ -f apt.txt ]; then
+  echo "Installing apt packages from apt.txt..."
+  sudo apt-get update
+  # Install each package listed in apt.txt
+  xargs sudo apt-get install -y < apt.txt
+fi
+
 # Debug - print current directory
 echo "Current directory: $(pwd)"
 
