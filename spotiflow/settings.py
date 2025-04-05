@@ -80,7 +80,7 @@ TESSERACT_CMD_PATH = os.getenv("TESSERACT_CMD_PATH", "/usr/bin/tesseract")
 # Spotify Configuration
 SPOTIFY_CLIENT_ID = os.getenv("SPOTIFY_CLIENT_ID")
 SPOTIFY_CLIENT_SECRET = os.getenv("SPOTIFY_CLIENT_SECRET")
-SPOTIFY_REDIRECT_URI = os.getenv("SPOTIFY_REDIRECT_URI", "https://spotiflow.onrender.com/callback/")
+SPOTIFY_REDIRECT_URI = os.getenv("SPOTIFY_REDIRECT_URI", "http://127.0.0.1:3000/callback/")
 SPOTIFY_SCOPE = os.getenv("SPOTIFY_SCOPE")
 
 # Static files (CSS, JavaScript, Images)
