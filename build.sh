@@ -1,31 +1,48 @@
 #!/usr/bin/env bash
-# exit on error
+
+# Exit on error
 set -o errexit
 
-# Debug - print current directory
-echo "Current directory: $(pwd)"
+# Debugging information
+echo "Starting build process..."
+echo "Python version:"
+python --version
 
-# Install dependencies
+# Install system dependencies
+echo "Installing system dependencies..."
+apt-get update
+# Install Tesseract OCR with all language data
+apt-get install -y tesseract-ocr tesseract-ocr-all
+
+# Verify Tesseract installation
+echo "Verifying Tesseract installation..."
+tesseract --version
+which tesseract
+echo "Tesseract data path:"
+echo $(tesseract --list-langs)
+
+# Create virtual environment
+echo "Creating virtual environment..."
+python -m venv venv
+
+# Activate virtual environment
+echo "Activating virtual environment..."
+source venv/bin/activate
+
+# Upgrade pip
+echo "Upgrading pip..."
+pip install --upgrade pip
+
+# Install python dependencies
+echo "Installing Python dependencies..."
 pip install -r requirements.txt
 
-# Debug - print current directory
-echo "Directory after installation: $(pwd)"
-
-# Make sure the current directory is in the Python path
-export PYTHONPATH=$PYTHONPATH:$(pwd)
-
-# Debug - print PYTHONPATH
-echo "PYTHONPATH: $PYTHONPATH"
-
-# Debug - list files in current directory
-echo "Files in current directory:"
-ls -la
-
-# Debug - check if spotiflow module exists
-echo "Checking for spotiflow module:"
-find . -name "*.py" | grep -i spotiflow
-echo "Tesseract path: $(which tesseract)"
-
-# Run Django commands
+# Collect static files
+echo "Collecting static files..."
 python manage.py collectstatic --no-input
+
+# Run migrations
+echo "Running migrations..."
 python manage.py migrate
+
+echo "Build completed successfully!"

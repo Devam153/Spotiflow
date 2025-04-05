@@ -4,11 +4,86 @@ from PIL import Image
 from django.conf import settings
 import re
 import os
+import logging
+import subprocess
+import shutil
+logger = logging.getLogger(__name__)
+
 
 class OCRHandler:
     def __init__(self):
-        # Set the tesseract path directly to match your working code
-        pytesseract.pytesseract.tesseract_cmd = '/usr/bin/tesseract'
+        # Check if we're in a cloud environment (Render)
+        self.is_cloud = os.environ.get('RENDER', False)
+        
+        # Locate the tesseract executable
+        tesseract_found = False
+        
+        if self.is_cloud:
+            # Try common paths in cloud environment
+            cloud_paths = [
+                '/usr/bin/tesseract',
+                '/usr/local/bin/tesseract',
+                '/app/.apt/usr/bin/tesseract'
+            ]
+            
+            for path in cloud_paths:
+                if os.path.exists(path):
+                    pytesseract.pytesseract.tesseract_cmd = path
+                    logger.info(f"Found Tesseract in cloud environment at: {path}")
+                    tesseract_found = True
+                    break
+            
+            if not tesseract_found:
+                # Try to find tesseract using which command
+                try:
+                    tesseract_path = subprocess.check_output(['which', 'tesseract']).decode().strip()
+                    if tesseract_path:
+                        pytesseract.pytesseract.tesseract_cmd = tesseract_path
+                        logger.info(f"Found Tesseract using 'which' command at: {tesseract_path}")
+                        tesseract_found = True
+                except (subprocess.SubprocessError, FileNotFoundError):
+                    logger.warning("Could not find Tesseract using 'which' command")
+            
+            # If still not found, try to use shutil
+            if not tesseract_found:
+                try:
+                    tesseract_path = shutil.which('tesseract')
+                    if tesseract_path:
+                        pytesseract.pytesseract.tesseract_cmd = tesseract_path
+                        logger.info(f"Found Tesseract using shutil.which at: {tesseract_path}")
+                        tesseract_found = True
+                except Exception as e:
+                    logger.error(f"Error using shutil.which: {str(e)}")
+        else:
+            # Use local Tesseract installation for development
+            tesseract_path = getattr(settings, 'TESSERACT_CMD_PATH', r'C:\Program Files\Tesseract-OCR\tesseract.exe')
+            pytesseract.pytesseract.tesseract_cmd = tesseract_path
+            logger.info(f"Using local Tesseract at: {tesseract_path}")
+            
+            # Check if the path exists
+            if os.path.exists(tesseract_path):
+                tesseract_found = True
+            else:
+                logger.warning(f"Tesseract not found at configured path: {tesseract_path}")
+                # Try common paths
+                common_paths = [
+                    r'C:\Program Files\Tesseract-OCR\tesseract.exe',
+                    r'C:\Program Files (x86)\Tesseract-OCR\tesseract.exe',
+                    r'/usr/bin/tesseract',
+                    r'/usr/local/bin/tesseract'
+                ]
+                
+                for path in common_paths:
+                    if os.path.exists(path):
+                        pytesseract.pytesseract.tesseract_cmd = path
+                        logger.info(f"Found Tesseract at: {path}")
+                        tesseract_found = True
+                        break
+        
+        self.tesseract_available = tesseract_found
+        if not tesseract_found:
+            logger.error("Tesseract OCR not found or not properly configured. OCR functions will not work.")
+    
         
     def process_image(self, image):
         """Process the uploaded image to extract songs"""
