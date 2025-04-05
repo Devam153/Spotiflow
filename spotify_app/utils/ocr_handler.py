@@ -3,11 +3,12 @@ import pytesseract
 from PIL import Image
 from django.conf import settings
 import re
+import os
 
 class OCRHandler:
     def __init__(self):
         # Set the tesseract path directly to match your working code
-        pytesseract.pytesseract.tesseract_cmd = r'C:\Users\DEVAM\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'
+        pytesseract.pytesseract.tesseract_cmd = os.getenv("TESSERACT_CMD_PATH")
         
     def process_image(self, image):
         """Process the uploaded image to extract songs"""
