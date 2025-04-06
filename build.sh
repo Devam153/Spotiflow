@@ -1,31 +1,61 @@
 #!/usr/bin/env bash
-# exit on error
+
+# Exit on error
 set -o errexit
 
-# Debug - print current directory
-echo "Current directory: $(pwd)"
+# Debugging information
+echo "Starting build process..."
+echo "Python version:"
+python --version
+echo "Environment variables:"
+echo "RENDER: $RENDER"
+echo "RENDER_EXTERNAL_URL: $RENDER_EXTERNAL_URL"
 
-# Install dependencies
+# Check for Spotify configuration
+echo "Checking Spotify configuration..."
+if [ -n "$SPOTIFY_CLIENT_ID" ]; then
+    echo "SPOTIFY_CLIENT_ID is set"
+else
+    echo "WARNING: SPOTIFY_CLIENT_ID is not set"
+fi
+
+if [ -n "$SPOTIFY_CLIENT_SECRET" ]; then
+    echo "SPOTIFY_CLIENT_SECRET is set"
+else
+    echo "WARNING: SPOTIFY_CLIENT_SECRET is not set"
+fi
+
+# Create virtual environment
+echo "Creating virtual environment..."
+python -m venv venv
+
+# Activate virtual environment
+echo "Activating virtual environment..."
+source venv/bin/activate
+
+# Upgrade pip
+echo "Upgrading pip..."
+pip install --upgrade pip
+
+# Install python dependencies
+echo "Installing Python dependencies..."
 pip install -r requirements.txt
 
-# Debug - print current directory
-echo "Directory after installation: $(pwd)"
-
-# Make sure the current directory is in the Python path
-export PYTHONPATH=$PYTHONPATH:$(pwd)
-
-# Debug - print PYTHONPATH
-echo "PYTHONPATH: $PYTHONPATH"
-
-# Debug - list files in current directory
+# Debug - List system paths and packages
+echo "Current directory: $(pwd)"
+echo "Python path: $PYTHONPATH"
 echo "Files in current directory:"
 ls -la
 
-# Debug - check if spotiflow module exists
 echo "Checking for spotiflow module:"
-find . -name "*.py" | grep -i spotiflow
-echo "Tesseract path: $(which tesseract)"
+find . -name "*.py" | grep -E "spotiflow"
 
-# Run Django commands
+# Collect static files
+echo "Collecting static files..."
 python manage.py collectstatic --no-input
+
+# Run migrations
+echo "Running migrations..."
 python manage.py migrate
+
+echo "Build completed successfully!"
