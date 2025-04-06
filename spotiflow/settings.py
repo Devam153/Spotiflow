@@ -1,3 +1,4 @@
+
 from pathlib import Path
 import os
 from dotenv import load_dotenv
@@ -87,13 +88,13 @@ TESSERACT_CMD_PATH = os.getenv("TESSERACT_CMD_PATH", "/usr/bin/tesseract")
 SPOTIFY_CLIENT_ID = os.getenv("SPOTIFY_CLIENT_ID")
 SPOTIFY_CLIENT_SECRET = os.getenv("SPOTIFY_CLIENT_SECRET")
 
-# Set fixed redirect URIs for both local and production
+# Fix the redirect URI for both local and production environments
 if RENDER_EXTERNAL_URL:
-    # We're on Render.com
+    # We're on Render.com - use the RENDER_EXTERNAL_URL
     SPOTIFY_REDIRECT_URI = f"{RENDER_EXTERNAL_URL}/spotify_app/callback/"
     logger.info(f"Using Render URL for Spotify redirect: {SPOTIFY_REDIRECT_URI}")
 else:
-    # Local development - always use 127.0.0.1 not localhost
+    # We're in local development - use 127.0.0.1
     SPOTIFY_REDIRECT_URI = "http://127.0.0.1:8000/spotify_app/callback/"
     logger.info(f"Using local URL for Spotify redirect: {SPOTIFY_REDIRECT_URI}")
 
