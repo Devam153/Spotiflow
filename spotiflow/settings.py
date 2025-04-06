@@ -80,7 +80,26 @@ TESSERACT_CMD_PATH = os.getenv("TESSERACT_CMD_PATH", "/usr/bin/tesseract")
 # Spotify Configuration
 SPOTIFY_CLIENT_ID = os.getenv("SPOTIFY_CLIENT_ID")
 SPOTIFY_CLIENT_SECRET = os.getenv("SPOTIFY_CLIENT_SECRET")
-SPOTIFY_REDIRECT_URI = os.getenv("SPOTIFY_REDIRECT_URI", "http://127.0.0.1:3000/callback/")
+# Determine the proper redirect URI based on the environment
+# For Render, use the RENDER_EXTERNAL_URL
+# For local development, use 127.0.0.1 instead of localhost (as localhost is deprecated)
+SPOTIFY_REDIRECT_URI = os.environ.get('SPOTIFY_REDIRECT_URI')
+
+if not SPOTIFY_REDIRECT_URI:
+    if RENDER_EXTERNAL_URL:
+        SPOTIFY_REDIRECT_URI = f"{RENDER_EXTERNAL_URL}/spotify_app/callback/"
+        print(f"Using Render external URL for Spotify redirect: {SPOTIFY_REDIRECT_URI}")
+    else:
+        # Default to 127.0.0.1 for local development (avoiding localhost)
+        port = os.environ.get('PORT', '8000')
+        SPOTIFY_REDIRECT_URI = f"http://127.0.0.1:{port}/spotify_app/callback/"
+        print(f"Using local development URL for Spotify redirect: {SPOTIFY_REDIRECT_URI}")
+else:
+    # If SPOTIFY_REDIRECT_URI is explicitly set, replace 'localhost' with '127.0.0.1'
+    if 'localhost' in SPOTIFY_REDIRECT_URI:
+        SPOTIFY_REDIRECT_URI = SPOTIFY_REDIRECT_URI.replace('localhost', '127.0.0.1')
+        print(f"Changed localhost to 127.0.0.1 in Spotify redirect URI: {SPOTIFY_REDIRECT_URI}")
+    print(f"Using configured Spotify redirect URI: {SPOTIFY_REDIRECT_URI}")
 SPOTIFY_SCOPE = os.getenv("SPOTIFY_SCOPE")
 
 # Static files (CSS, JavaScript, Images)
