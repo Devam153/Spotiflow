@@ -24,6 +24,7 @@ services:
       python manage.py collectstatic --no-input
       python manage.py migrate
     startCommand: |
+      echo "Runtime Tesseract:" && which tesseract && \
       PYTHONPATH=$PYTHONPATH:$(pwd) gunicorn spotiflow.wsgi:application --bind 0.0.0.0:$PORT
     apt:
       packages:
