@@ -4,6 +4,7 @@ from PIL import Image
 from django.conf import settings
 import re
 import os
+from PIL import ImageOps
 
 class OCRHandler:
     def __init__(self):
@@ -11,11 +12,31 @@ class OCRHandler:
         tesseract_path = os.getenv("TESSERACT_CMD_PATH", "/usr/bin/tesseract")
         pytesseract.pytesseract.tesseract_cmd = tesseract_path
 
-        
+    
     def process_image(self, image):
         """Process the uploaded image to extract songs"""
         img = Image.open(image)
-        text = pytesseract.image_to_string(img)
+
+        # Step 1: Convert to grayscale
+        img = img.convert("L")
+        
+        # Step 2: Resize only if image is too large (preserve aspect ratio)
+        MAX_PIXELS = 5_000_000  # ~5MP
+        if img.width * img.height > MAX_PIXELS:
+            scale_factor = (MAX_PIXELS / (img.width * img.height)) ** 0.5
+            new_size = (int(img.width * scale_factor), int(img.height * scale_factor))
+            img = img.resize(new_size, Image.ANTIALIAS)
+
+        # Step 3: Enhance contrast (makes OCR more accurate)
+        img = ImageOps.autocontrast(img)
+
+        # Step 4 (optional): For very tall images, split vertically into chunks
+        if img.height > 2000:  # Tweak threshold as needed
+            chunks = self._split_image_vertically(img)
+            text = "\n".join(pytesseract.image_to_string(chunk) for chunk in chunks)
+        else:
+            text = pytesseract.image_to_string(img)
+
         return self._parse_songs(text)
 
     def _parse_songs(self, text):
@@ -111,3 +132,11 @@ class OCRHandler:
             return True
             
         return False
+    def _split_image_vertically(self, img, chunk_height=1000):
+        """Split image into vertical chunks to avoid OCR timeouts"""
+        width, height = img.size
+        chunks = []
+        for y in range(0, height, chunk_height):
+            box = (0, y, width, min(y + chunk_height, height))
+            chunks.append(img.crop(box))
+        return chunks
