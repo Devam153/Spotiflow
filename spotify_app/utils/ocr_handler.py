@@ -4,19 +4,35 @@ from PIL import Image
 from django.conf import settings
 import re
 import os
+import logging
+
+logger = logging.getLogger(__name__)
 
 class OCRHandler:
     def __init__(self):
-        # Set the tesseract path directly to match your working code
-        tesseract_path = os.getenv("TESSERACT_CMD_PATH", "/usr/bin/tesseract")
+        # Get the tesseract path from settings or environment variable
+        tesseract_path = os.environ.get('TESSERACT_CMD_PATH', '/usr/bin/tesseract')
+        logger.info(f"Using Tesseract path: {tesseract_path}")
+        
+        # Set Tesseract path
         pytesseract.pytesseract.tesseract_cmd = tesseract_path
-
         
     def process_image(self, image):
         """Process the uploaded image to extract songs"""
-        img = Image.open(image)
-        text = pytesseract.image_to_string(img)
-        return self._parse_songs(text)
+        try:
+            img = Image.open(image)
+            text = pytesseract.image_to_string(img)
+            songs = self._parse_songs(text)
+            return {
+                "success": True,
+                "songs": songs
+            }
+        except Exception as e:
+            logger.error(f"Error processing image: {str(e)}")
+            return {
+                "success": False,
+                "error": f"Failed to process image: {str(e)}. Please enter songs manually."
+            }
 
     def _parse_songs(self, text):
         """Parse text to extract song-artist pairs"""
