@@ -21,6 +21,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     'spotiflow.onrender.com',
+    'spotiflow-1.onrender.com',
     '127.0.0.1',
     'localhost',
 ]
