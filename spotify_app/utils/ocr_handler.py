@@ -3,11 +3,13 @@ import pytesseract
 from PIL import Image
 from django.conf import settings
 import re
+import os
 
 class OCRHandler:
     def __init__(self):
         # Set the tesseract path directly to match your working code
-        pytesseract.pytesseract.tesseract_cmd = '/usr/bin/tesseract'
+        tesseract_path = os.getenv("TESSERACT_CMD_PATH", "/usr/bin/tesseract")
+        pytesseract.pytesseract.tesseract_cmd = tesseract_path
 
         
     def process_image(self, image):
