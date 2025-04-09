@@ -21,10 +21,10 @@ echo "PYTHONPATH: $PYTHONPATH"
 echo "Files in current directory:"
 ls -la
 
-apt-get update
-
-# Install Tesseract OCR
-apt-get install -y tesseract-ocr
+# Debug - check if spotiflow module exists
+echo "Checking for spotiflow module:"
+find . -name "*.py" | grep -i spotiflow
+echo "Tesseract path: $(which tesseract)"
 
 # Run Django commands
 python manage.py collectstatic --no-input
