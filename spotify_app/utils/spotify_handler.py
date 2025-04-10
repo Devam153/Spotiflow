@@ -9,7 +9,8 @@ class SpotifyHandler:
             client_secret=settings.SPOTIFY_CLIENT_SECRET,
             redirect_uri=settings.SPOTIFY_REDIRECT_URI,
             scope=settings.SPOTIFY_SCOPE,
-            cache_path=None  # Don't cache tokens in production
+            cache_path=None,  # Don't cache tokens in production
+            show_dialog = True
         ))
 
     def search_for_songs(self, songs_dict):
