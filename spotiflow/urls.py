@@ -22,5 +22,6 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('spotify_app.urls')),
+    path('spotify_app/', include('spotify_app.urls')),
+    path('', include('spotify_app.urls')),  # Add root URL patterns too
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
