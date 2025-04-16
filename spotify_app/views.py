@@ -1,13 +1,17 @@
+
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.contrib import messages
 from .utils.spotify_handler import SpotifyHandler
 from .utils.ocr_handler import OCRHandler
 import json
+import logging
+
+logger = logging.getLogger(__name__)
 
 def index(request):
     """Home page view"""
-    return render(request, 'index.html')
+    return render(request, 'spotify_app/index.html')
 
 def process_image(request):
     """Process uploaded image with OCR"""
@@ -34,6 +38,29 @@ def process_image(request):
         'error': 'No image uploaded'
     })
 
+def spotify_auth(request):
+    """Authenticate with Spotify"""
+    # Get songs from session
+    songs = request.session.get('songs', {})
+    if not songs:
+        messages.error(request, "No songs found. Please upload an image or enter songs manually.")
+        return redirect('spotify_app:step1')
+    
+    # Initialize Spotify handler and get auth URL
+    spotify = SpotifyHandler()
+    auth_url = spotify.get_auth_url()
+    
+    if not auth_url:
+        messages.error(request, "Failed to get Spotify authentication URL. Please try again.")
+        return redirect('spotify_app:step1')
+    
+    # Store the Spotify handler in the session
+    # (Not the actual handler, but a flag to create a new one after callback)
+    request.session['spotify_auth_started'] = True
+    
+    # Redirect to Spotify authorization page
+    return redirect(auth_url)
+
 def spotify_callback(request):
     """Handle Spotify OAuth callback"""
     # Extract the authorization code from the request
@@ -41,10 +68,29 @@ def spotify_callback(request):
     
     if not code:
         messages.error(request, "Authorization failed. Please try again.")
-        return redirect('spotify_app:index')
+        return redirect('spotify_app:step1')
     
-    messages.success(request, "Successfully authenticated with Spotify!")
-    return redirect('spotify_app:step2')
+    # Check if auth was started
+    if not request.session.get('spotify_auth_started'):
+        messages.error(request, "Authentication process was not properly initiated. Please try again.")
+        return redirect('spotify_app:step1')
+    
+    # Complete authentication
+    spotify = SpotifyHandler()
+    if spotify.complete_auth(code):
+        # Store code in session (not the actual token for security)
+        request.session['spotify_auth_code'] = code
+        
+        # Get user profile for display
+        user_profile = spotify.get_user_profile()
+        if user_profile:
+            request.session['spotify_username'] = user_profile.get('display_name') or user_profile.get('id')
+        
+        messages.success(request, "Successfully authenticated with Spotify!")
+        return redirect('spotify_app:step2')
+    else:
+        messages.error(request, "Failed to complete Spotify authentication. Please try again.")
+        return redirect('spotify_app:step1')
 
 def step1(request):
     """Step 1: Upload image or manually enter songs"""
@@ -69,20 +115,29 @@ def step1(request):
                     songs[line.strip()] = None
             
             request.session['songs'] = songs
-            return redirect('spotify_app:step2')
+            # After processing songs, redirect to Spotify auth instead of step2
+            return redirect('spotify_app:spotify_auth')
             
-    return render(request, 'step1.html')
+    return render(request, 'spotify_app/step1.html')
 
 def step2(request):
     """Step 2: Select what to do with the songs"""
-    songs = request.session.get('songs', {})
+    # Check if user is authenticated
+    if not request.session.get('spotify_auth_code'):
+        messages.warning(request, "Please authenticate with Spotify first.")
+        return redirect('spotify_app:spotify_auth')
     
+    # Get songs from session
+    songs = request.session.get('songs', {})
     if not songs:
         messages.error(request, "No songs found. Please upload an image or enter songs manually.")
         return redirect('spotify_app:step1')
     
-    # Initialize Spotify handler
+    # Initialize Spotify handler with auth code
     spotify = SpotifyHandler()
+    if not spotify.complete_auth(request.session.get('spotify_auth_code')):
+        messages.error(request, "Spotify authentication has expired. Please authenticate again.")
+        return redirect('spotify_app:spotify_auth')
     
     # Process form submission
     if request.method == 'POST':
@@ -93,7 +148,7 @@ def step2(request):
         
         if not track_ids:
             messages.warning(request, "No songs were found on Spotify.")
-            return render(request, 'step2.html', {'songs': songs})
+            return render(request, 'spotify_app/step2.html', {'songs': songs})
         
         # Store track IDs in session
         request.session['track_ids'] = track_ids
@@ -131,24 +186,39 @@ def step2(request):
     
     # Get user playlists for display
     try:
+        spotify_username = request.session.get('spotify_username', 'Spotify User')
         playlists = spotify.get_user_playlists()
-        return render(request, 'step2.html', {
+        return render(request, 'spotify_app/step2.html', {
             'songs': songs,
-            'playlists': playlists['items'] if playlists else []
+            'playlists': playlists['items'] if playlists and 'items' in playlists else [],
+            'username': spotify_username
         })
     except Exception as e:
-        messages.error(request, f"Failed to load Spotify playlists: {str(e)}")
-        return render(request, 'step2.html', {'songs': songs})
+        logger.error(f"Failed to load Spotify playlists: {str(e)}")
+        return render(request, 'spotify_app/step2.html', {'songs': songs})
 
 def completion(request):
     """Completion page after successful operation"""
-    return render(request, 'completion.html')
+    # Clear auth data on completion
+    if 'spotify_auth_code' in request.session:
+        del request.session['spotify_auth_code']
+    if 'spotify_auth_started' in request.session:
+        del request.session['spotify_auth_started']
+    
+    return render(request, 'spotify_app/completion.html')
 
 # API endpoints for React app
 def get_playlists(request):
+    # Check if user is authenticated
+    if not request.session.get('spotify_auth_code'):
+        return JsonResponse({'error': 'Not authenticated'}, status=401)
+        
     try:
         # Initialize Spotify handler
         spotify = SpotifyHandler()
+        if not spotify.complete_auth(request.session.get('spotify_auth_code')):
+            return JsonResponse({'error': 'Authentication expired'}, status=401)
+            
         playlists = spotify.get_user_playlists()
         
         if playlists and 'items' in playlists:
@@ -162,30 +232,16 @@ def get_playlists(request):
             ]
             return JsonResponse({'playlists': formatted_playlists})
         else:
-            # Fallback to mock data if no playlists found
-            mock_playlists = [
-                {'id': '1', 'name': 'Chill Vibes', 'description': '32 songs'},
-                {'id': '2', 'name': 'Workout Mix', 'description': '45 songs'},
-                {'id': '3', 'name': 'Driving Music', 'description': '28 songs'},
-                {'id': '4', 'name': 'Study Playlist', 'description': '15 songs'},
-            ]
-            return JsonResponse({'playlists': mock_playlists})
+            return JsonResponse({'playlists': []})
     except Exception as e:
-        # Fallback to mock data on error
-        mock_playlists = [
-            {'id': '1', 'name': 'Chill Vibes', 'description': '32 songs'},
-            {'id': '2', 'name': 'Workout Mix', 'description': '45 songs'},
-            {'id': '3', 'name': 'Driving Music', 'description': '28 songs'},
-            {'id': '4', 'name': 'Study Playlist', 'description': '15 songs'},
-        ]
-        return JsonResponse({'playlists': mock_playlists})
-
-def get_songs(request):
-    """Get songs from session"""
-    songs = request.session.get('songs', {})
-    return JsonResponse({'songs': songs})
+        logger.error(f"Error in get_playlists: {str(e)}")
+        return JsonResponse({'playlists': []})
 
 def create_playlist(request):
+    # Check if user is authenticated
+    if not request.session.get('spotify_auth_code'):
+        return JsonResponse({'error': 'Not authenticated'}, status=401)
+        
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
@@ -198,6 +254,9 @@ def create_playlist(request):
                 
             # Initialize Spotify handler
             spotify = SpotifyHandler()
+            if not spotify.complete_auth(request.session.get('spotify_auth_code')):
+                return JsonResponse({'error': 'Authentication expired'}, status=401)
+                
             new_playlist = spotify.create_playlist(playlist_name, description, track_ids)
             
             if new_playlist:

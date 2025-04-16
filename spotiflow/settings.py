@@ -99,8 +99,12 @@ else:
     SPOTIFY_REDIRECT_URI = "http://127.0.0.1:8000/spotify_app/callback/"
     logger.info(f"Using local URL for Spotify redirect: {SPOTIFY_REDIRECT_URI}")
 
-# Set the correct scope
-SPOTIFY_SCOPE = "playlist-modify-public user-library-modify playlist-read-private"
+# Set the complete scope for all Spotify API functionality
+SPOTIFY_SCOPE = "playlist-modify-public user-library-modify playlist-read-private user-read-private"
+
+# Session configuration - extend session timeout
+SESSION_COOKIE_AGE = 86400  # 24 hours in seconds
+SESSION_SAVE_EVERY_REQUEST = True
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'

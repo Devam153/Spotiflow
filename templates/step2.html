@@ -69,6 +69,14 @@
             box-shadow: 0 0 15px var(--primary-glow);
         }
 
+        /* User info */
+        .user-info {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--primary);
+            font-weight: 500;
+        }
+
         /* Main content layout */
         .content-layout {
             display: grid;
@@ -88,6 +96,35 @@
             margin-bottom: 1.5rem;
             font-weight: 600;
             text-align: center;
+        }
+
+        /* Message styles */
+        .message {
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: var(--border-radius);
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .message.error {
+            background-color: rgba(220, 53, 69, 0.2);
+            color: #ff6b6b;
+        }
+
+        .message.success {
+            background-color: rgba(40, 167, 69, 0.2);
+            color: #51cf66;
+        }
+
+        .message.warning {
+            background-color: rgba(255, 193, 7, 0.2);
+            color: #ffd43b;
+        }
+
+        .message.info {
+            background-color: rgba(0, 123, 255, 0.2);
+            color: #339af0;
         }
 
         /* Song list styles */
@@ -276,6 +313,13 @@
             <div class="step-circle">2</div>
         </div>
 
+        <!-- Show username if available -->
+        {% if username %}
+        <div class="user-info">
+            Logged in as: {{ username }}
+        </div>
+        {% endif %}
+
         {% if messages %}
         {% for message in messages %}
         <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
@@ -349,8 +393,8 @@
                             </select>
                         </div>
                         {% else %}
-                        <p class="no-playlists-message">No playlists found. Please authenticate with Spotify or create a
-                            new playlist.</p>
+                        <p class="no-playlists-message">No playlists found. This could be because you have no playlists
+                            or we cannot access them.</p>
                         {% endif %}
                     </div>
 
