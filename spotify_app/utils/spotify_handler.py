@@ -1,3 +1,4 @@
+
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 from django.conf import settings
@@ -7,7 +8,8 @@ import logging
 logger = logging.getLogger(__name__)
 
 class SpotifyHandler:
-    def __init__(self):
+    def __init__(self, auth_code=None):
+        # Initialize with a specific auth code for user-specific authentication
         # Configure detailed logging
         logger.info(f"Initializing SpotifyHandler")
         logger.info(f"SPOTIFY_CLIENT_ID: {settings.SPOTIFY_CLIENT_ID}")
@@ -24,11 +26,16 @@ class SpotifyHandler:
                 scope=settings.SPOTIFY_SCOPE,
                 open_browser=False,  # Prevent browser opening in server environment
                 cache_path=None,  # Don't cache tokens - always require fresh auth
-                show_dialog=True  # Always show Spotify login dialog
+                show_dialog=True,  # Always show Spotify login dialog
+                code=auth_code  # Pass the specific auth code for user authentication
             )
             
-            # Don't create Spotify client instance yet - wait until we have a token
+            # Initialize Spotify client if auth code is provided
             self.sp = None
+            if auth_code:
+                token_info = self.sp_oauth.get_access_token(auth_code)
+                self.sp = spotipy.Spotify(auth=token_info['access_token'])
+            
             logger.info("SpotifyOAuth initialized successfully")
         except Exception as e:
             logger.error(f"Error initializing SpotifyOAuth: {str(e)}")

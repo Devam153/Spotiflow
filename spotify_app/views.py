@@ -1,3 +1,4 @@
+
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.contrib import messages
@@ -17,8 +18,10 @@ def index(request):
         del request.session['spotify_auth_started']
     if 'spotify_username' in request.session:
         del request.session['spotify_username']
+    if 'spotify_user_id' in request.session:
+        del request.session['spotify_user_id']
     
-    return render(request, 'index.html')
+    return render(request, 'spotify_app/index.html')
 
 def process_image(request):
     """Process uploaded image with OCR"""
@@ -78,29 +81,23 @@ def spotify_callback(request):
         messages.error(request, "Authorization failed. Please try again.")
         return redirect('spotify_app:step1')
     
-    # Check if auth was started
-    if not request.session.get('spotify_auth_started'):
-        messages.error(request, "Authentication process was not properly initiated. Please try again.")
-        return redirect('spotify_app:step1')
+    # Store the authorization code in the session for user-specific authentication
+    request.session['spotify_auth_code'] = code
+    request.session['spotify_auth_started'] = True
     
-    logger.info(f"Received Spotify callback with code")
+    # Complete authentication and get user profile
+    spotify = SpotifyHandler(code)  # Pass code to handler
+    user_profile = spotify.get_user_profile()
     
-    # Complete authentication
-    spotify = SpotifyHandler()
-    if spotify.complete_auth(code):
-        # Store code in session (not the actual token for security)
-        request.session['spotify_auth_code'] = code
+    if user_profile:
+        # Store user-specific information in session
+        request.session['spotify_username'] = user_profile.get('display_name') or user_profile.get('id')
+        request.session['spotify_user_id'] = user_profile.get('id')
         
-        # Get user profile for display
-        user_profile = spotify.get_user_profile()
-        if user_profile:
-            request.session['spotify_username'] = user_profile.get('display_name') or user_profile.get('id')
-            logger.info(f"Authenticated as Spotify user: {request.session['spotify_username']}")
-        
-        messages.success(request, "Successfully authenticated with Spotify!")
+        messages.success(request, f"Successfully authenticated as {request.session['spotify_username']}!")
         return redirect('spotify_app:step2')
     else:
-        messages.error(request, "Failed to complete Spotify authentication. Please try again.")
+        messages.error(request, "Failed to retrieve user profile. Please try again.")
         return redirect('spotify_app:step1')
 
 def step1(request):
@@ -129,11 +126,11 @@ def step1(request):
             # After processing songs, redirect to Spotify auth instead of step2
             return redirect('spotify_app:spotify_auth')
             
-    return render(request, 'step1.html')
+    return render(request, 'spotify_app/step1.html')
 
 def step2(request):
     """Step 2: Select what to do with the songs"""
-    # Check if user is authenticated
+    # Check if user is authenticated with Spotify
     if not request.session.get('spotify_auth_code'):
         messages.warning(request, "Please authenticate with Spotify first.")
         return redirect('spotify_app:spotify_auth')
@@ -144,11 +141,8 @@ def step2(request):
         messages.error(request, "No songs found. Please upload an image or enter songs manually.")
         return redirect('spotify_app:step1')
     
-    # Initialize Spotify handler with auth code
-    spotify = SpotifyHandler()
-    if not spotify.complete_auth(request.session.get('spotify_auth_code')):
-        messages.error(request, "Spotify authentication has expired. Please authenticate again.")
-        return redirect('spotify_app:spotify_auth')
+    # Initialize Spotify handler with user's specific auth code
+    spotify = SpotifyHandler(request.session.get('spotify_auth_code'))
     
     # Process form submission
     if request.method == 'POST':
@@ -159,7 +153,7 @@ def step2(request):
         
         if not track_ids:
             messages.warning(request, "No songs were found on Spotify.")
-            return render(request, 'step2.html', {'songs': songs})
+            return render(request, 'spotify_app/step2.html', {'songs': songs})
         
         # Store track IDs in session
         request.session['track_ids'] = track_ids
@@ -195,18 +189,22 @@ def step2(request):
             else:
                 messages.error(request, "Please provide a name for your playlist.")
     
-    # Get user playlists for display
+    # Get user-specific playlists
     try:
         spotify_username = request.session.get('spotify_username', 'Spotify User')
+        spotify_user_id = request.session.get('spotify_user_id')
+        
         playlists = spotify.get_user_playlists()
-        return render(request, 'step2.html', {
+        
+        return render(request, 'spotify_app/step2.html', {
             'songs': songs,
             'playlists': playlists['items'] if playlists and 'items' in playlists else [],
             'username': spotify_username
         })
     except Exception as e:
         logger.error(f"Failed to load Spotify playlists: {str(e)}")
-        return render(request, 'step2.html', {'songs': songs})
+        messages.error(request, f"Failed to load playlists: {str(e)}")
+        return render(request, 'spotify_app/step2.html', {'songs': songs})
 
 def completion(request):
     """Completion page after successful operation"""
@@ -216,4 +214,4 @@ def completion(request):
     if 'spotify_auth_started' in request.session:
         del request.session['spotify_auth_started']
     
-    return render(request, 'completion.html')
+    return render(request, 'spotify_app/completion.html')
