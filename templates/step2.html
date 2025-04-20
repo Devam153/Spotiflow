@@ -10,14 +10,12 @@
     <style>
         /* Base styles */
         :root {
-            --background: #121212;
+            --background: #191414;
             --foreground: #FFFFFF;
             --primary: #1DB954;
             --primary-glow: rgba(29, 185, 84, 0.5);
-            --secondary: #65F396;
             --muted: #333333;
             --muted-foreground: #B3B3B3;
-            --card-bg: rgba(30, 30, 30, 0.7);
             --border-radius: 8px;
         }
 
@@ -44,158 +42,130 @@
             max-width: 1200px;
             width: 100%;
             margin: 0 auto;
-            padding: 0 1rem;
+        }
+
+        /* Header styles */
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .spotify-green {
+            color: #1DB954;
         }
 
         /* Step indicator */
-        .step-circle-container {
+        .step-indicator {
             display: flex;
             justify-content: center;
-            margin-bottom: 4rem;
+            margin-bottom: 2rem;
+            gap: 2rem;
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
         }
 
         .step-circle {
-            width: 70px;
-            height: 70px;
+            width: 60px;
+            height: 60px;
             border: 2px solid var(--primary);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2.5rem;
+            font-size: 1.5rem;
             font-weight: 700;
+            margin-bottom: 0.5rem;
             color: var(--primary);
             background-color: transparent;
-            box-shadow: 0 0 15px var(--primary-glow);
         }
 
-        /* User info */
-        .user-info {
-            text-align: center;
-            margin-bottom: 2rem;
-            color: var(--primary);
-            font-weight: 500;
+        .step.active .step-circle {
+            background-color: var(--primary);
+            color: var(--background);
         }
 
-        /* Main content layout */
-        .content-layout {
+        .step.inactive .step-circle {
+            border-color: var(--muted);
+            color: var(--muted-foreground);
+        }
+
+        .step-label {
+            font-size: 0.9rem;
+            color: var(--muted-foreground);
+        }
+
+        .step.active .step-label {
+            color: var(--foreground);
+        }
+
+        /* Content section */
+        .content-section {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 2rem;
-            margin-bottom: 3rem;
+            margin-bottom: 2rem;
         }
 
         @media (max-width: 768px) {
-            .content-layout {
+            .content-section {
                 grid-template-columns: 1fr;
             }
         }
 
-        .section-title {
-            font-size: 1.5rem;
-            margin-bottom: 1.5rem;
+        .card {
+            background-color: #282828;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
             font-weight: 600;
+            margin-bottom: 1rem;
             text-align: center;
         }
 
-        /* Message styles */
-        .message {
-            padding: 1rem;
-            margin-bottom: 1.5rem;
-            border-radius: var(--border-radius);
-            text-align: center;
-            font-weight: 500;
-        }
-
-        .message.error {
-            background-color: rgba(220, 53, 69, 0.2);
-            color: #ff6b6b;
-        }
-
-        .message.success {
-            background-color: rgba(40, 167, 69, 0.2);
-            color: #51cf66;
-        }
-
-        .message.warning {
-            background-color: rgba(255, 193, 7, 0.2);
-            color: #ffd43b;
-        }
-
-        .message.info {
-            background-color: rgba(0, 123, 255, 0.2);
-            color: #339af0;
-        }
-
-        /* Song list styles */
-        .songs-panel {
-            background-color: var(--card-bg);
-            border-radius: var(--border-radius);
-            min-height: 400px;
-            padding: 1rem;
-            border: 1px solid rgba(80, 80, 80, 0.3);
-        }
-
+        /* Song list */
         .song-list {
-            max-height: 350px;
+            max-height: 300px;
             overflow-y: auto;
-            scrollbar-width: none;
-            /* Firefox */
-            -ms-overflow-style: none;
-            /* IE and Edge */
-        }
-
-        .song-list::-webkit-scrollbar {
-            display: none;
-            /* Chrome, Safari, Opera */
+            margin-bottom: 1.5rem;
+            padding-right: 10px;
         }
 
         .song-item {
-            background-color: var(--muted);
+            background-color: #333;
+            border: none;
             border-radius: var(--border-radius);
             padding: 0.75rem 1rem;
             margin-bottom: 0.5rem;
-        }
-
-        /* Options panel styles */
-        .options-panel {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-        }
-
-        .option-toggle {
-            display: flex;
-            width: 100%;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .option-btn {
-            flex: 1;
-            padding: 0.8rem;
-            border: none;
-            border-radius: var(--border-radius);
-            font-size: 1rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .option-btn.active {
-            background-color: var(--secondary);
-            color: var(--background);
-            box-shadow: 0 0 15px var(--primary-glow);
-        }
-
-        .option-btn.inactive {
-            background-color: var(--muted);
             color: var(--foreground);
         }
 
-        /* Form controls */
-        .form-group {
-            margin-bottom: 1.5rem;
+        /* Forms */
+        .form-check {
+            margin-bottom: 1rem;
+        }
+
+        .form-check-input {
+            background-color: #333;
+            border: 1px solid #555;
+        }
+
+        .form-check-input:checked {
+            background-color: var(--primary);
+            border-color: var(--primary);
         }
 
         .form-label {
@@ -204,121 +174,149 @@
             font-weight: 500;
         }
 
-        .form-control {
+        .form-control,
+        .form-select {
             width: 100%;
-            background-color: rgba(50, 50, 50, 0.8);
+            background-color: #333;
             border: none;
-            color: var(--foreground);
-            padding: 1rem;
+            color: white;
+            padding: 0.75rem 1rem;
             border-radius: var(--border-radius);
-            font-size: 1rem;
-            transition: all 0.3s ease;
+            margin-bottom: 1rem;
         }
 
-        .form-control:focus {
-            outline: none;
-            box-shadow: 0 0 0 2px var(--primary-glow);
+        .form-control:focus,
+        .form-select:focus {
+            background-color: #444;
+            color: white;
+            outline: 1px solid var(--primary);
         }
 
-        textarea.form-control {
-            min-height: 100px;
-            resize: vertical;
-        }
-
-        /* Checkbox styling */
-        .checkbox-container {
-            display: flex;
-            align-items: center;
-            margin-top: 1.5rem;
-        }
-
-        .custom-checkbox {
-            appearance: none;
-            -webkit-appearance: none;
-            width: 20px;
-            height: 20px;
-            background-color: var(--muted);
-            border-radius: 4px;
-            margin-right: 0.75rem;
-            position: relative;
-            cursor: pointer;
-        }
-
-        .custom-checkbox:checked {
+        /* Buttons */
+        .btn-spotify {
             background-color: var(--primary);
-        }
-
-        .custom-checkbox:checked::after {
-            content: "✓";
-            position: absolute;
-            color: var(--background);
-            font-size: 14px;
-            font-weight: bold;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-
-        /* Button styles */
-        .continue-container {
-            display: flex;
-            justify-content: center;
-            margin-top: 2rem;
-        }
-
-        .continue-btn {
-            background-color: var(--secondary);
             color: var(--background);
             border: none;
             border-radius: 30px;
-            padding: 1rem 3rem;
-            font-size: 1.1rem;
+            padding: 0.75rem 2rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 0 20px var(--primary-glow);
         }
 
-        .continue-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 0 30px var(--primary-glow);
+        .btn-spotify:hover {
+            background-color: #1ed760;
+            transform: translateY(-2px);
         }
 
-        /* Hidden elements */
-        .hidden {
+        .btn-outline {
+            background-color: transparent;
+            color: var(--foreground);
+            border: 1px solid #555;
+            border-radius: 30px;
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline:hover {
+            border-color: var(--foreground);
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        /* Radio button styling */
+        .radio-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .radio-option input[type="radio"] {
+            margin-right: 0.5rem;
+        }
+
+        /* Option panels */
+        .option-panel {
+            margin-top: 1rem;
+            margin-left: 1.5rem;
+            padding: 1rem;
+            background-color: #333;
+            border-radius: var(--border-radius);
             display: none;
         }
 
-        /* Playlist select dropdown */
-        .playlist-select {
-            width: 100%;
-            padding: 1rem;
-            background-color: rgba(50, 50, 50, 0.8);
-            color: var(--foreground);
-            border: none;
-            border-radius: var(--border-radius);
-            font-size: 1rem;
+        /* Messages */
+        .message {
+            margin: 1rem 0;
+            padding: 0.75rem;
+            border-radius: 5px;
         }
 
-        .playlist-select:focus {
-            outline: none;
-            box-shadow: 0 0 0 2px var(--primary-glow);
+        .message.error {
+            background-color: rgba(220, 53, 69, 0.2);
+            color: #dc3545;
+        }
+
+        .message.success {
+            background-color: rgba(40, 167, 69, 0.2);
+            color: #28a745;
+        }
+
+        .message.warning {
+            background-color: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+        }
+
+        /* User info */
+        .user-info {
+            text-align: center;
+            margin-bottom: 1rem;
+            padding: 0.5rem 1rem;
+            background-color: rgba(29, 185, 84, 0.1);
+            border-radius: var(--border-radius);
+            display: inline-block;
+            margin-left: auto;
+            margin-right: auto;
         }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <div class="step-circle-container">
-            <div class="step-circle">2</div>
+        <div class="header">
+            <h1 class="title"><span class="spotify-green">Spoti</span>flow</h1>
+            <p>Step 2: Create Your Playlist</p>
+            {% if username %}
+            <div class="user-info">
+                <p>Logged in as: <strong>{{ username }}</strong></p>
+            </div>
+            {% endif %}
         </div>
 
-        <!-- Show username if available -->
-        {% if username %}
-        <div class="user-info">
-            Logged in as: {{ username }}
+        <div class="step-indicator">
+            <div class="step">
+                <div class="step-circle">1</div>
+                <span class="step-label">Upload Songs</span>
+            </div>
+            <div class="step active">
+                <div class="step-circle">2</div>
+                <span class="step-label">Create Playlist</span>
+            </div>
+            <div class="step inactive">
+                <div class="step-circle">3</div>
+                <span class="step-label">Done</span>
+            </div>
         </div>
-        {% endif %}
 
         {% if messages %}
         {% for message in messages %}
@@ -328,125 +326,109 @@
         {% endfor %}
         {% endif %}
 
-        <form method="post" action="{% url 'spotify_app:step2' %}">
-            {% csrf_token %}
-
-            <div class="content-layout">
-                <!-- Left side: Songs list -->
-                <div>
-                    <h2 class="section-title">Your Songs</h2>
-                    <div class="songs-panel">
-                        <div class="song-list">
-                            {% for song, artist in songs.items %}
-                            <div class="song-item">
-                                <strong>{{ song }}</strong> {% if artist %}- {{ artist }}{% endif %}
-                            </div>
-                            {% empty %}
-                            <div class="song-item">No songs detected</div>
-                            {% endfor %}
-                        </div>
-                    </div>
+        <div class="content-section">
+            <!-- Left side: Songs list -->
+            <div class="card">
+                <h3 class="card-title">Detected Songs</h3>
+                <div class="song-list">
+                    <ul class="list-group" style="list-style-type: none; padding: 0;">
+                        {% for song, artist in songs.items %}
+                        <li class="song-item">
+                            <strong>{{ song }}</strong> {% if artist %}- {{ artist }}{% endif %}
+                        </li>
+                        {% empty %}
+                        <li class="song-item">No songs detected</li>
+                        {% endfor %}
+                    </ul>
                 </div>
+            </div>
 
-                <!-- Right side: Options -->
-                <div class="options-panel">
-                    <h2 class="section-title">Playlist Options</h2>
+            <!-- Right side: Options -->
+            <div class="card">
+                <h3 class="card-title">Playlist Options</h3>
 
-                    <!-- Toggle buttons for option selection -->
-                    <div class="option-toggle">
-                        <button type="button" id="existingBtn" class="option-btn inactive">Select Existing
-                            Playlist</button>
-                        <button type="button" id="newBtn" class="option-btn active">Create New Playlist</button>
+                <form method="post" action="{% url 'spotify_app:step2' %}">
+                    {% csrf_token %}
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="like_songs" id="likeSongs">
+                        <label class="form-check-label" for="likeSongs">
+                            Also add songs to my Liked Songs
+                        </label>
                     </div>
 
-                    <!-- Hidden radio buttons for form submission -->
-                    <div style="display: none;">
-                        <input type="radio" name="action" id="existingPlaylist" value="existing_playlist">
-                        <input type="radio" name="action" id="newPlaylist" value="new_playlist" checked>
-                    </div>
+                    <div class="radio-group">
+                        <h4 class="mb-3">Choose an option:</h4>
 
-                    <!-- Create new playlist panel -->
-                    <div id="newPlaylistPanel">
-                        <div class="form-group">
-                            <label class="form-label" for="playlistName">Playlist Name</label>
-                            <input type="text" class="form-control" id="playlistName" name="playlist_name"
-                                placeholder="Enter playlist name">
+                        <div class="radio-option">
+                            <input type="radio" name="action" id="existingPlaylist" value="existing_playlist">
+                            <label for="existingPlaylist">
+                                Add to existing playlist
+                            </label>
                         </div>
 
-                        <div class="form-group">
-                            <label class="form-label" for="playlistDescription">Playlist Description</label>
-                            <textarea class="form-control" id="playlistDescription" name="playlist_description"
-                                placeholder="Enter playlist description"></textarea>
-                        </div>
-                    </div>
-
-                    <!-- Select existing playlist panel -->
-                    <div id="existingPlaylistPanel" class="hidden">
-                        {% if playlists %}
-                        <div class="form-group">
-                            <label class="form-label" for="playlistSelect">Select Playlist</label>
-                            <select id="playlistSelect" name="playlist_id" class="playlist-select">
-                                <option value="">Choose a playlist</option>
+                        <div class="option-panel" id="existingPlaylistOptions">
+                            {% if playlists %}
+                            <select name="playlist_id" class="form-select">
+                                <option value="">Select a playlist</option>
                                 {% for playlist in playlists %}
                                 <option value="{{ playlist.id }}">{{ playlist.name }}</option>
                                 {% endfor %}
                             </select>
+                            {% else %}
+                            <p class="text-warning">No playlists found. Please authenticate with Spotify or create a new
+                                playlist.</p>
+                            {% endif %}
                         </div>
-                        {% else %}
-                        <p class="no-playlists-message">No playlists found. This could be because you have no playlists
-                            or we cannot access them.</p>
-                        {% endif %}
+
+                        <div class="radio-option">
+                            <input type="radio" name="action" id="newPlaylist" value="new_playlist">
+                            <label for="newPlaylist">
+                                Create a new playlist
+                            </label>
+                        </div>
+
+                        <div class="option-panel" id="newPlaylistOptions">
+                            <div class="mb-3">
+                                <label for="playlistName" class="form-label">Playlist Name</label>
+                                <input type="text" class="form-control" id="playlistName" name="playlist_name">
+                            </div>
+                            <div class="mb-3">
+                                <label for="playlistDescription" class="form-label">Description (optional)</label>
+                                <textarea class="form-control" id="playlistDescription" name="playlist_description"
+                                    rows="3"></textarea>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- Like songs option -->
-                    <div class="checkbox-container">
-                        <input type="checkbox" class="custom-checkbox" id="likeSongs" name="like_songs">
-                        <label for="likeSongs">Like songs as well</label>
+                    <div class="action-buttons">
+                        <button type="submit" class="btn-spotify">Continue</button>
+                        <a href="{% url 'spotify_app:step1' %}" class="btn-outline">Back</a>
                     </div>
-                </div>
+                </form>
             </div>
-
-            <div class="continue-container">
-                <button type="submit" class="continue-btn">Continue</button>
-            </div>
-        </form>
+        </div>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const existingBtn = document.getElementById('existingBtn');
-            const newBtn = document.getElementById('newBtn');
-            const existingPlaylist = document.getElementById('existingPlaylist');
-            const newPlaylist = document.getElementById('newPlaylist');
-            const existingPlaylistPanel = document.getElementById('existingPlaylistPanel');
-            const newPlaylistPanel = document.getElementById('newPlaylistPanel');
+        // Show/hide playlist options based on selection
+        const existingPlaylistRadio = document.getElementById('existingPlaylist');
+        const newPlaylistRadio = document.getElementById('newPlaylist');
+        const existingPlaylistOptions = document.getElementById('existingPlaylistOptions');
+        const newPlaylistOptions = document.getElementById('newPlaylistOptions');
 
-            // Toggle between existing and new playlist options
-            existingBtn.addEventListener('click', function () {
-                existingBtn.classList.add('active');
-                existingBtn.classList.remove('inactive');
-                newBtn.classList.add('inactive');
-                newBtn.classList.remove('active');
+        existingPlaylistRadio.addEventListener('change', function () {
+            if (this.checked) {
+                existingPlaylistOptions.style.display = 'block';
+                newPlaylistOptions.style.display = 'none';
+            }
+        });
 
-                existingPlaylist.checked = true;
-                newPlaylist.checked = false;
-
-                existingPlaylistPanel.classList.remove('hidden');
-                newPlaylistPanel.classList.add('hidden');
-            });
-
-            newBtn.addEventListener('click', function () {
-                newBtn.classList.add('active');
-                newBtn.classList.remove('inactive');
-                existingBtn.classList.add('inactive');
-                existingBtn.classList.remove('active');
-
-                newPlaylist.checked = true;
-                existingPlaylist.checked = false;
-
-                newPlaylistPanel.classList.remove('hidden');
-                existingPlaylistPanel.classList.add('hidden');
-            });
+        newPlaylistRadio.addEventListener('change', function () {
+            if (this.checked) {
+                newPlaylistOptions.style.display = 'block';
+                existingPlaylistOptions.style.display = 'none';
+            }
         });
     </script>
 </body>

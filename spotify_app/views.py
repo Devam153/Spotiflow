@@ -1,4 +1,3 @@
-
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.contrib import messages
@@ -11,7 +10,15 @@ logger = logging.getLogger(__name__)
 
 def index(request):
     """Home page view"""
-    return render(request, 'index.html')
+    # Clear any existing Spotify auth data when returning to home
+    if 'spotify_auth_code' in request.session:
+        del request.session['spotify_auth_code']
+    if 'spotify_auth_started' in request.session:
+        del request.session['spotify_auth_started']
+    if 'spotify_username' in request.session:
+        del request.session['spotify_username']
+    
+    return render(request, 'spotify_app/index.html')
 
 def process_image(request):
     """Process uploaded image with OCR"""
@@ -59,6 +66,7 @@ def spotify_auth(request):
     request.session['spotify_auth_started'] = True
     
     # Redirect to Spotify authorization page
+    logger.info(f"Redirecting user to Spotify auth: {auth_url}")
     return redirect(auth_url)
 
 def spotify_callback(request):
@@ -75,6 +83,8 @@ def spotify_callback(request):
         messages.error(request, "Authentication process was not properly initiated. Please try again.")
         return redirect('spotify_app:step1')
     
+    logger.info(f"Received Spotify callback with code")
+    
     # Complete authentication
     spotify = SpotifyHandler()
     if spotify.complete_auth(code):
@@ -85,6 +95,7 @@ def spotify_callback(request):
         user_profile = spotify.get_user_profile()
         if user_profile:
             request.session['spotify_username'] = user_profile.get('display_name') or user_profile.get('id')
+            logger.info(f"Authenticated as Spotify user: {request.session['spotify_username']}")
         
         messages.success(request, "Successfully authenticated with Spotify!")
         return redirect('spotify_app:step2')
@@ -118,7 +129,7 @@ def step1(request):
             # After processing songs, redirect to Spotify auth instead of step2
             return redirect('spotify_app:spotify_auth')
             
-    return render(request, 'step1.html')
+    return render(request, 'spotify_app/step1.html')
 
 def step2(request):
     """Step 2: Select what to do with the songs"""
@@ -148,7 +159,7 @@ def step2(request):
         
         if not track_ids:
             messages.warning(request, "No songs were found on Spotify.")
-            return render(request, 'step2.html', {'songs': songs})
+            return render(request, 'spotify_app/step2.html', {'songs': songs})
         
         # Store track IDs in session
         request.session['track_ids'] = track_ids
@@ -188,14 +199,14 @@ def step2(request):
     try:
         spotify_username = request.session.get('spotify_username', 'Spotify User')
         playlists = spotify.get_user_playlists()
-        return render(request, 'step2.html', {
+        return render(request, 'spotify_app/step2.html', {
             'songs': songs,
             'playlists': playlists['items'] if playlists and 'items' in playlists else [],
             'username': spotify_username
         })
     except Exception as e:
         logger.error(f"Failed to load Spotify playlists: {str(e)}")
-        return render(request, 'step2.html', {'songs': songs})
+        return render(request, 'spotify_app/step2.html', {'songs': songs})
 
 def completion(request):
     """Completion page after successful operation"""
@@ -205,64 +216,4 @@ def completion(request):
     if 'spotify_auth_started' in request.session:
         del request.session['spotify_auth_started']
     
-    return render(request, 'completion.html')
-
-# API endpoints for React app
-def get_playlists(request):
-    # Check if user is authenticated
-    if not request.session.get('spotify_auth_code'):
-        return JsonResponse({'error': 'Not authenticated'}, status=401)
-        
-    try:
-        # Initialize Spotify handler
-        spotify = SpotifyHandler()
-        if not spotify.complete_auth(request.session.get('spotify_auth_code')):
-            return JsonResponse({'error': 'Authentication expired'}, status=401)
-            
-        playlists = spotify.get_user_playlists()
-        
-        if playlists and 'items' in playlists:
-            formatted_playlists = [
-                {
-                    'id': playlist['id'],
-                    'name': playlist['name'],
-                    'description': f"{playlist.get('tracks', {}).get('total', 0)} songs"
-                }
-                for playlist in playlists['items']
-            ]
-            return JsonResponse({'playlists': formatted_playlists})
-        else:
-            return JsonResponse({'playlists': []})
-    except Exception as e:
-        logger.error(f"Error in get_playlists: {str(e)}")
-        return JsonResponse({'playlists': []})
-
-def create_playlist(request):
-    # Check if user is authenticated
-    if not request.session.get('spotify_auth_code'):
-        return JsonResponse({'error': 'Not authenticated'}, status=401)
-        
-    if request.method == 'POST':
-        try:
-            data = json.loads(request.body)
-            playlist_name = data.get('name')
-            track_ids = data.get('songs', [])
-            description = data.get('description', '')
-            
-            if not playlist_name:
-                return JsonResponse({'success': False, 'error': 'Playlist name is required'}, status=400)
-                
-            # Initialize Spotify handler
-            spotify = SpotifyHandler()
-            if not spotify.complete_auth(request.session.get('spotify_auth_code')):
-                return JsonResponse({'error': 'Authentication expired'}, status=401)
-                
-            new_playlist = spotify.create_playlist(playlist_name, description, track_ids)
-            
-            if new_playlist:
-                return JsonResponse({'success': True, 'message': 'Playlist created successfully', 'playlist': new_playlist})
-            else:
-                return JsonResponse({'success': False, 'error': 'Failed to create playlist'}, status=400)
-        except Exception as e:
-            return JsonResponse({'success': False, 'error': str(e)}, status=400)
-    return JsonResponse({'error': 'Invalid request method'}, status=400)
+    return render(request, 'spotify_app/completion.html')
