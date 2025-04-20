@@ -18,7 +18,7 @@ def index(request):
     if 'spotify_username' in request.session:
         del request.session['spotify_username']
     
-    return render(request, 'spotify_app/index.html')
+    return render(request, 'index.html')
 
 def process_image(request):
     """Process uploaded image with OCR"""
@@ -129,7 +129,7 @@ def step1(request):
             # After processing songs, redirect to Spotify auth instead of step2
             return redirect('spotify_app:spotify_auth')
             
-    return render(request, 'spotify_app/step1.html')
+    return render(request, 'step1.html')
 
 def step2(request):
     """Step 2: Select what to do with the songs"""
@@ -159,7 +159,7 @@ def step2(request):
         
         if not track_ids:
             messages.warning(request, "No songs were found on Spotify.")
-            return render(request, 'spotify_app/step2.html', {'songs': songs})
+            return render(request, 'step2.html', {'songs': songs})
         
         # Store track IDs in session
         request.session['track_ids'] = track_ids
@@ -199,14 +199,14 @@ def step2(request):
     try:
         spotify_username = request.session.get('spotify_username', 'Spotify User')
         playlists = spotify.get_user_playlists()
-        return render(request, 'spotify_app/step2.html', {
+        return render(request, 'step2.html', {
             'songs': songs,
             'playlists': playlists['items'] if playlists and 'items' in playlists else [],
             'username': spotify_username
         })
     except Exception as e:
         logger.error(f"Failed to load Spotify playlists: {str(e)}")
-        return render(request, 'spotify_app/step2.html', {'songs': songs})
+        return render(request, 'step2.html', {'songs': songs})
 
 def completion(request):
     """Completion page after successful operation"""
@@ -216,4 +216,4 @@ def completion(request):
     if 'spotify_auth_started' in request.session:
         del request.session['spotify_auth_started']
     
-    return render(request, 'spotify_app/completion.html')
+    return render(request, 'completion.html')
