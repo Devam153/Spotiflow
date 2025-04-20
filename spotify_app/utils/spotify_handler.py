@@ -26,8 +26,7 @@ class SpotifyHandler:
                 scope=settings.SPOTIFY_SCOPE,
                 open_browser=False,  # Prevent browser opening in server environment
                 cache_path=None,  # Don't cache tokens - always require fresh auth
-                show_dialog=True,  # Always show Spotify login dialog
-                code=auth_code  # Pass the specific auth code for user authentication
+                show_dialog=True  # Always show Spotify login dialog
             )
             
             # Initialize Spotify client if auth code is provided

@@ -86,7 +86,7 @@ def spotify_callback(request):
     request.session['spotify_auth_started'] = True
     
     # Complete authentication and get user profile
-    spotify = SpotifyHandler(code)  # Pass code to handler
+    spotify = SpotifyHandler(auth_code=code)  # Pass code to handler
     user_profile = spotify.get_user_profile()
     
     if user_profile:
@@ -142,7 +142,7 @@ def step2(request):
         return redirect('spotify_app:step1')
     
     # Initialize Spotify handler with user's specific auth code
-    spotify = SpotifyHandler(request.session.get('spotify_auth_code'))
+    spotify = SpotifyHandler(auth_code=request.session.get('spotify_auth_code'))
     
     # Process form submission
     if request.method == 'POST':
@@ -189,13 +189,10 @@ def step2(request):
             else:
                 messages.error(request, "Please provide a name for your playlist.")
     
-    # Get user-specific playlists
+    # Get user playlists for display
     try:
         spotify_username = request.session.get('spotify_username', 'Spotify User')
-        spotify_user_id = request.session.get('spotify_user_id')
-        
         playlists = spotify.get_user_playlists()
-        
         return render(request, 'step2.html', {
             'songs': songs,
             'playlists': playlists['items'] if playlists and 'items' in playlists else [],
