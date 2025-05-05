@@ -8,7 +8,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 class SpotifyHandler:
-    def __init__(self, auth_code=None):
+    def __init__(self, auth_code=None, cache_path=None):
         # Initialize with a specific auth code for user-specific authentication
         # Configure detailed logging
         logger.info(f"Initializing SpotifyHandler")
@@ -25,7 +25,7 @@ class SpotifyHandler:
                 redirect_uri=settings.SPOTIFY_REDIRECT_URI,
                 scope=settings.SPOTIFY_SCOPE,
                 open_browser=False,  # Prevent browser opening in server environment
-                cache_path=None,  # Don't cache tokens - always require fresh auth
+                cache_path=cache_path,  # Use session-specific cache path
                 show_dialog=True  # Always show Spotify login dialog
             )
             

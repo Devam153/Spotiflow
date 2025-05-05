@@ -1,9 +1,10 @@
-
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.contrib import messages
 from .utils.spotify_handler import SpotifyHandler
 from .utils.ocr_handler import OCRHandler
+import os
+from django.conf import settings
 import json
 import logging
 
@@ -20,6 +21,8 @@ def index(request):
         del request.session['spotify_username']
     if 'spotify_user_id' in request.session:
         del request.session['spotify_user_id']
+    if 'spotify_cache_path' in request.session:
+        del request.session['spotify_cache_path']
     
     return render(request, 'index.html')
 
@@ -56,16 +59,22 @@ def spotify_auth(request):
         messages.error(request, "No songs found. Please upload an image or enter songs manually.")
         return redirect('spotify_app:step1')
     
-    # Initialize Spotify handler and get auth URL
-    spotify = SpotifyHandler()
+    # Ensure session key exists
+    request.session.save()
+    
+    # Create a unique cache path for this user session
+    cache_path = os.path.join(settings.BASE_DIR, f".spotify-cache-{request.session.session_key}.json")
+    request.session['spotify_cache_path'] = cache_path
+    
+    # Initialize Spotify handler with the unique cache path
+    spotify = SpotifyHandler(cache_path=cache_path)
     auth_url = spotify.get_auth_url()
     
     if not auth_url:
         messages.error(request, "Failed to get Spotify authentication URL. Please try again.")
         return redirect('spotify_app:step1')
     
-    # Store the Spotify handler in the session
-    # (Not the actual handler, but a flag to create a new one after callback)
+    # Store the auth started flag in the session
     request.session['spotify_auth_started'] = True
     
     # Redirect to Spotify authorization page
@@ -81,12 +90,15 @@ def spotify_callback(request):
         messages.error(request, "Authorization failed. Please try again.")
         return redirect('spotify_app:step1')
     
+    # Get the cache path from the session
+    cache_path = request.session.get('spotify_cache_path')
+    
     # Store the authorization code in the session for user-specific authentication
     request.session['spotify_auth_code'] = code
     request.session['spotify_auth_started'] = True
     
     # Complete authentication and get user profile
-    spotify = SpotifyHandler(auth_code=code)  # Pass code to handler
+    spotify = SpotifyHandler(auth_code=code, cache_path=cache_path)
     user_profile = spotify.get_user_profile()
     
     if user_profile:
@@ -141,8 +153,14 @@ def step2(request):
         messages.error(request, "No songs found. Please upload an image or enter songs manually.")
         return redirect('spotify_app:step1')
     
-    # Initialize Spotify handler with user's specific auth code
-    spotify = SpotifyHandler(auth_code=request.session.get('spotify_auth_code'))
+    # Get the cache path from the session
+    cache_path = request.session.get('spotify_cache_path')
+    
+    # Initialize Spotify handler with user's specific auth code and cache path
+    spotify = SpotifyHandler(
+        auth_code=request.session.get('spotify_auth_code'),
+        cache_path=cache_path
+    )
     
     # Process form submission
     if request.method == 'POST':
@@ -210,5 +228,14 @@ def completion(request):
         del request.session['spotify_auth_code']
     if 'spotify_auth_started' in request.session:
         del request.session['spotify_auth_started']
+    if 'spotify_cache_path' in request.session:
+        # Consider deleting the cache file here as well for cleanup
+        cache_path = request.session.get('spotify_cache_path')
+        if cache_path and os.path.exists(cache_path):
+            try:
+                os.remove(cache_path)
+            except Exception as e:
+                logger.error(f"Error removing cache file: {str(e)}")
+        del request.session['spotify_cache_path']
     
     return render(request, 'completion.html')
