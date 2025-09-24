@@ -2,7 +2,7 @@
 
 Turn any song list into a Spotify playlist instantly! Upload a photo of a concert setlist, album tracklist, or just type in your favorite songs - Spotiflow will automatically create a Spotify playlist for you.
 
-**Website Link**: [Try Spotiflow now!](https://spotiflow.onrender.com)
+**Website Link**: https://spotiflow.onrender.com
 
 ## ✨ What it does
 
