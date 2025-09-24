@@ -2,9 +2,11 @@
 
 Turn any song list into a Spotify playlist instantly! Upload a photo of a concert setlist, album tracklist, or just type in your favorite songs - Spotiflow will automatically create a Spotify playlist for you.
 
+**Website Link**: [Try Spotiflow now!](https://spotiflow.onrender.com)
+
 ## ✨ What it does
 
-- **Upload & Scan**: Take a photo of any song list (concert setlists, album covers, handwritten notes)
+- **Upload & Scan**: Take a photo of any song list (pinterest screenshots, album covers, handwritten notes)
 - **Auto-Extract**: Uses OCR to read song titles and artists from your image
 - **Manual Entry**: Type in songs manually if you prefer
 - **Spotify Magic**: Automatically searches and finds songs on Spotify
@@ -27,13 +29,12 @@ Turn any song list into a Spotify playlist instantly! Upload a photo of a concer
 
 ## 🔧 Built with
 
-- React + TypeScript frontend
+- Normal HTML, CSS, JavaScript frontend
 - Django Python backend
 - Spotify Web API
 - OCR text recognition
+- Deployed on Render
 
 ---
-
-**Live Demo**: [Try Spotiflow now!](your-deployed-url-here)
 
 _Made for music lovers who want their playlists as fast as their favorite songs_
