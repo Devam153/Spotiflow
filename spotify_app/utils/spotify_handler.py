@@ -10,7 +10,6 @@ logger = logging.getLogger(__name__)
 class SpotifyHandler:
     def __init__(self, auth_code=None, cache_path=None):
         # Initialize with a specific auth code for user-specific authentication
-        # Configure detailed logging
         logger.info(f"Initializing SpotifyHandler")
         logger.info(f"SPOTIFY_CLIENT_ID: {settings.SPOTIFY_CLIENT_ID}")
         logger.info(f"SPOTIFY_REDIRECT_URI: {settings.SPOTIFY_REDIRECT_URI}")
