@@ -1,10 +1,15 @@
 import logging
 
+from django.conf import settings
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.contrib import messages
 
-from .utils.spotify_handler import SpotifyHandler, build_oauth
+from .utils.spotify_handler import (
+    SpotifyHandler,
+    build_oauth,
+    SpotifyUserNotRegistered,
+)
 from .utils.ocr_handler import OCRHandler
 
 logger = logging.getLogger(__name__)
@@ -84,7 +89,15 @@ def spotify_callback(request):
     request.session['spotify_token_info'] = token_info
 
     spotify = SpotifyHandler(token_info)
-    user_profile = spotify.get_user_profile()
+    try:
+        user_profile = spotify.get_user_profile()
+    except SpotifyUserNotRegistered:
+        # Account authenticated fine but isn't allow-listed for this app
+        # (Spotify Development Mode). Send them to a dedicated explainer
+        # instead of silently bouncing back to step 1.
+        _clear_spotify_session(request)
+        return redirect('spotify_app:access_denied')
+
     if not user_profile:
         messages.error(request, "Failed to retrieve user profile. Please try again.")
         return redirect('spotify_app:step1')
@@ -192,6 +205,18 @@ def step2(request):
         logger.error(f"Failed to load Spotify playlists: {e}")
         messages.error(request, f"Failed to load playlists: {e}")
         return render(request, 'step2.html', {'songs': songs})
+
+
+def access_denied(request):
+    """Shown when a Spotify account isn't allow-listed for this app.
+
+    Spotify apps in Development Mode only allow accounts added under
+    'User Management' in the developer dashboard (max 25). Other users hit
+    a 403 right after authorizing; this page explains why and what to do.
+    """
+    return render(request, 'access_denied.html', {
+        'support_email': getattr(settings, 'SUPPORT_EMAIL', None),
+    })
 
 
 def completion(request):

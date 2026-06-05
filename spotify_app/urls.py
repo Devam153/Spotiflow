@@ -9,6 +9,7 @@ urlpatterns = [
     path('step2/', views.step2, name='step2'),
     path('spotify-auth/', views.spotify_auth, name='spotify_auth'),
     path('callback/', views.spotify_callback, name='spotify_callback'),
+    path('access-denied/', views.access_denied, name='access_denied'),
     path('completion/', views.completion, name='completion'),
     path('process-image/', views.process_image, name='process_image'),
 ]
