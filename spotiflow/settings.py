@@ -36,7 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
-    'django.contrib.sessions',
+    'django.contrib.sessions', # django's default session
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'spotify_app.apps.SpotifyAppConfig',
@@ -77,7 +77,7 @@ WSGI_APPLICATION = 'spotiflow.wsgi.application'
 # Database
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
+        'ENGINE': 'django.db.backends.sqlite3', # actual session data
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
@@ -101,6 +101,10 @@ else:
 
 # Set the complete scope for all Spotify API functionality
 SPOTIFY_SCOPE = "playlist-modify-public user-library-modify playlist-read-private user-read-private"
+
+# Email shown on the access-denied page so blocked users can request to be
+# allow-listed (Spotify Development Mode). Optional: if unset, the button hides.
+SUPPORT_EMAIL = os.getenv("SUPPORT_EMAIL")
 
 # Session configuration - extend session timeout
 SESSION_COOKIE_AGE = 86400  # 24 hours in seconds

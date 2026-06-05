@@ -4,23 +4,35 @@ import logging
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 from spotipy.cache_handler import MemoryCacheHandler
+from spotipy.exceptions import SpotifyException
 from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
 
+class SpotifyUserNotRegistered(Exception):
+    """Raised when an authenticated user is not allow-listed for this app.
+
+    Spotify apps in Development Mode only permit accounts added under
+    'User Management' in the developer dashboard. Everyone else gets a
+    403 'The user is not registered for this application' on the first
+    API call. We surface that distinctly so the UI can explain it instead
+    of silently bouncing the user back to step 1.
+    """
+
+
 def build_oauth():
     """Build a SpotifyOAuth that never touches disk.
+    only used for URL generation, code exchange and refresh.
 
-    MemoryCacheHandler keeps the token only on this instance, so the cache
-    cannot leak between users. We persist tokens ourselves via the Django
-    session — this object is only used for URL generation, code exchange,
-    and refresh.
+    spotipy provides MemoryCacheHandler that 
+    keeps the token only on this instance, not in the hard drive, so the cache cannot leak between users. 
+    We persist tokens ourselves via the Django session.
     """
     return SpotifyOAuth(
         client_id=settings.SPOTIFY_CLIENT_ID,
         client_secret=settings.SPOTIFY_CLIENT_SECRET,
-        redirect_uri=settings.SPOTIFY_REDIRECT_URI,
+        redirect_uri=settings,
         scope=settings.SPOTIFY_SCOPE,
         open_browser=False,
         cache_handler=MemoryCacheHandler(),
@@ -74,6 +86,14 @@ class SpotifyHandler:
     def get_user_profile(self):
         try:
             return self.sp.me()
+        except SpotifyException as e:
+            # A 403 on /me almost always means the account is not allow-listed
+            # for an app still in Spotify Development Mode. Surface it distinctly.
+            if e.http_status == 403:
+                logger.warning(f"Spotify user not registered for this app: {e}")
+                raise SpotifyUserNotRegistered(e.msg) from e
+            logger.error(f"Error getting user profile: {e}")
+            return None
         except Exception as e:
             logger.error(f"Error getting user profile: {e}")
             return None

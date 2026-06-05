@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Access Required - Spotiflow</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --background: #121212;
+            --foreground: #FFFFFF;
+            --primary: #1DB954;
+            --primary-glow: rgba(29, 185, 84, 0.5);
+            --muted: #333333;
+            --muted-foreground: #B3B3B3;
+            --danger: #ff4757;
+            --border-radius: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--foreground);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 560px;
+            background-color: #181818;
+            border-radius: 16px;
+            padding: 2.5rem;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .icon-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: rgba(255, 71, 87, 0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+        }
+
+        h1 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        p {
+            color: var(--muted-foreground);
+            line-height: 1.6;
+            margin-bottom: 1.25rem;
+        }
+
+        .steps {
+            text-align: left;
+            background-color: #232323;
+            border-radius: var(--border-radius);
+            padding: 1.25rem 1.25rem 1.25rem 2.5rem;
+            margin-bottom: 1.75rem;
+        }
+
+        .steps li {
+            color: var(--foreground);
+            margin-bottom: 0.6rem;
+            line-height: 1.5;
+        }
+
+        .steps li:last-child {
+            margin-bottom: 0;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .btn {
+            border: none;
+            border-radius: 30px;
+            padding: 0.85rem 2rem;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--background);
+            box-shadow: 0 0 15px rgba(29, 185, 84, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(29, 185, 84, 0.6);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--foreground);
+            border: 1px solid var(--muted);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--foreground);
+        }
+
+        /* Toast notifications */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+
+        .toast {
+            background-color: #333;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            animation: slideIn 0.3s ease-out;
+            max-width: 320px;
+        }
+
+        .toast.error {
+            border-left: 4px solid var(--danger);
+        }
+
+        .toast-icon {
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card">
+        <div class="icon-circle">
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none"
+                stroke="#ff4757" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+        </div>
+
+        <h1>Your Spotify account needs access</h1>
+
+        <p>
+            You authorized successfully, but this app is currently in Spotify's
+            <strong>Development Mode</strong>, so only approved accounts can use it yet.
+            Spotify blocked the request with a <em>&ldquo;user is not registered&rdquo;</em> error.
+        </p>
+
+        <ul class="steps">
+            <li>Send the email address of your Spotify account to the app owner.</li>
+            <li>They add you under <strong>User Management</strong> in the Spotify dashboard.</li>
+            <li>Come back and authorize again — it'll work.</li>
+        </ul>
+
+        <div class="actions">
+            {% if support_email %}
+            <a class="btn btn-primary"
+                href="mailto:{{ support_email }}?subject=Spotiflow%20access%20request&body=Please%20add%20my%20Spotify%20account%20email%3A%20">
+                Request Access
+            </a>
+            {% endif %}
+            <a class="btn btn-secondary" href="{% url 'spotify_app:step1' %}">Back to Start</a>
+        </div>
+    </div>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const toast = document.createElement('div');
+            toast.className = 'toast error';
+            toast.innerHTML = `
+                <svg class="toast-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ff4757" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                <div class="toast-message">This Spotify account isn't approved for the app yet.</div>`;
+            document.getElementById('toastContainer').appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(30px)';
+                setTimeout(() => toast.remove(), 300);
+            }, 5000);
+        });
+    </script>
+</body>
+
+</html>
